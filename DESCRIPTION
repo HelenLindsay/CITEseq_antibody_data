@@ -1,0 +1,18 @@
+Package: CITEseq_antibody_data
+Title: Creating The CITEseq Antibody Table
+Version: 0.0.0.9000
+Authors@R: 
+    person("Helen", "Lindsay", , "helen.lindsay@chuv.ch",
+    role = c("aut", "cre"), comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Code and step-by-step description of how we generated the
+    CITEseq data set used in our package AbNames. 
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports: 
+    dplyr
