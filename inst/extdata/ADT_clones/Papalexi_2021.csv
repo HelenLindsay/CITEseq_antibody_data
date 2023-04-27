@@ -1,0 +1,9 @@
+Antigen,Clone,Vendor,TotalSeq_Cat,Cat_Number,Notes,Experiment,Oligo_ID
+PD-L1,MIH1,eBioscience,NA,14-5983-82,Conjugated in-house,CITE-seq,NA
+PD-L2,24F.10C12,BioLegend,NA,329602,Conjugated in-house,CITE-seq,NA
+CD86,IT2.2,BioLegend,NA,305402,Conjugated in-house,CITE-seq,NA
+CD366,F38-2E2,BioLegend,NA,345002,Conjugated in-house,CITE-seq,NA
+PD-L1,29E.2A3,BioLegend,C,329751,,ECCITE-seq,7
+PD-L2,24F.10C12,BioLegend,C,329621,,ECCITE-seq,8
+CD86,IT2.2,BioLegend,C,305447,,ECCITE-seq,6
+CD366,F38-2E2,BioLegend,C,345049,,ECCITE-seq,169

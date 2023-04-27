@@ -1,0 +1,50 @@
+Antibody,Reactive,CITE-seq barcode,Supplier,Note
+control_rIgG2a,Mouse,TAAGCCGTTCGG,BioLegend,"Negative controls, not used in analysis"
+control_mIgG,Mouse,CATGATTGGCTC,BioLegend,"Negative controls, not used in analysis"
+control_mIgG2a,Mouse,GAGGCGATTGAT,BioLegend,"Negative controls, not used in analysis"
+control_mIgG1,Mouse,TGTCCGGCAATA,BioLegend,"Negative controls, not used in analysis"
+control_mIgG2a_2,Mouse,TGGTGAACCTGG,BioLegend,"Negative controls, not used in analysis"
+control_mIgG2b,Mouse,GATCGTAATACC,BioLegend,"Negative controls, not used in analysis"
+control_mIgM,Mouse,AAGCGCTTGGCA,BioLegend,"Negative controls, not used in analysis"
+control_mIgG2b_2,Mouse,CATCGGTGTACA,BioLegend,"Negative controls, not used in analysis"
+control_mIgG1_2,Mouse,GTCTAGACTTCG,BioLegend,"Negative controls, not used in analysis"
+CD3,Human,CTCATTGTAACTCCT,BioLegend,
+CD56,Human,TCCTTTCCTGATAGG,BioLegend,
+CD19,Human,CTGGGCAATTACTCG,BioLegend,
+CD11c,Human,TACGCCTATAACTTG,BioLegend,
+CD34,Human,GCAGAAATCTCCCTT,BioLegend,
+CD45RA,Human,TCAATCCTTCCGCTT,BioLegend,
+CD4,Human,TGTTCCCGCTCAACT,BioLegend,
+CD8a,Human,GCTGCGCTTTCCATT,BioLegend,
+CD14,Human,TCTCAGACCTCCGTA,BioLegend,
+CD16,Human,AAGTTCACTCTTTGC,BioLegend,
+CD25,Human,TTTGTCCTGTACGCC,BioLegend,
+CD45RO,Human,CTCCGAATCATGTTG,BioLegend,
+CD183_CXCR3,Human,GCGATGGTAGATTAT,BioLegend,
+CD185,Human,AATTCAACCGTCGCC,BioLegend,
+CD69,Human,GTCTCTTGGCTTAAA,BioLegend,
+CD197_CCR7,Human,AGTTCAGTCAACCGA,BioLegend,
+CD161,Human,GTACGCAGTCCTTCT,BioLegend,
+CD27,Human,GCACTCCTGCATGTA,BioLegend,
+HLA-DR,Human,AATAGCGAGCAAGTA,BioLegend,
+CD57,Human,AACTCCCTATGGAGG,BioLegend,
+CD278_ICOS ,Human,CGCGCACCCATTAAA,BioLegend,
+CD24,Human,AGATTCCTTCGTGTT,BioLegend,
+CD11a,Human,TATATCCTTGTGAGC,BioLegend,
+CD79b_IgB,Human,ATTCTTCAACCGAAG,BioLegend,
+CD123,Human,CTTCACTCTGTCAGG,BioLegend,
+CD38,Human,ATCCTTTGCCGTGTT,BioLegend,
+CD127_IL7Ra,Human,GGCACCCATGTCTTT,BioLegend,
+CD28,Human,ATTCTGTCTTTCCCA,BioLegend,
+CD235,Human,GCTCCTTTACACGTA,BioLegend,
+CD279_PD1,Human,ACAGCGCCGTATTTA,BioLegend,
+CD20,Human,TTCTGGGTCCCTAGA,BioLegend,
+CD21,Human,AACCTAGTAGTTCGG,BioLegend,
+IgD,Human,CGTCACCTCTGTATC,BioLegend,
+CD22,Human,AAGTCACCCGCTTTA,BioLegend,
+CD66ace,Human,GGGACAGTTCGTTTC,BioLegend,
+CD194_CCR4,Human,AGCTTACCTGCACGA,BioLegend,
+CD185_CXCR5,Human,AATTCAACCGTCGCC,BioLegend,
+IgM,Human,TAGCGAGCCCGTATA,BioLegend,
+CD196_CCR6,Human,GATCCCTTTGTCACT,BioLegend,
+CD195_CCR5,Human,CCAAAGTAAGAGCCA,BioLegend,

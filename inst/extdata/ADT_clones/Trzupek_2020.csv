@@ -1,0 +1,149 @@
+Antibody,Clone,Subexperiment,Vendor,Study
+ CD103,Ber-ACT8,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD28,CD28.2,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD27,M-T271,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD197 (CCR7),3D12,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD161,DX12,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD69,FN50,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD196 (CCR6),11A9,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD152 (CTLA-4),BNI3,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD45RO,UCHL1,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD14,MpP9,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD194 (CCR4),1G1,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD185 (CXCR5),RF8B2,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD25,M-A251,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD8,RPA-T8,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD127,HIL-7R-M21,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD45RA,HI100,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD19,SJ25C1,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+CD10,HI10a,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD11b (Mac-1),M1/70,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD11c,B-ly6,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD13,WM15,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD16,3G8,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD20,2H7,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD235a/b,GA-R2,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD24,ML5,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD275 (B7-H2),2D3/B7-H2,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD33,WM53,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD34,581,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD39,TU66,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD5,UCHT2,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD56 (NCAM-1),NCAM16.2,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD62L,DREG-56,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD7,M-T701,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD80,L307.4,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD86,FUN1,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD90,5E10,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ ICOS (CD278),DX29,Pre-sorted CD4+ T-cell,BD Bioscience,Trzupek_2020
+ CD28,CD28.2,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD27,M-T271,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD197 (CCR7),3D12,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD161,DX12,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD69,FN50,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD196 (CCR6),11A9,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD152 (CTLA-4),BNI3,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD45RO,UCHL1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD194 (CCR4),1G1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD185 (CXCR5),RF8B2,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD25,M-A251,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD127,HIL-7R-M21,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD45RA,HI100,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD24,ML5,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD275 (B7-H2),2D3/B7-H2,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD33,WM53,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD39,TU66,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD5,UCHT2,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD62L,DREG-56,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD7,M-T701,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD80,L307.4,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD86,FUN1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD90,5E10,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ ICOS (CD278),DX29,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD38,HIT2,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+PD-1 (CD279),EH12.1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+OX40 (CD134),ACT35,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+PDL2 (CD273),MIH18,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+TNFRSF9 (CD137),4B4-1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+TIM3 (CD366),7D3,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD95 (FAS),DX2,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD126 (IL6R),M5,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+GITR (CD357),V27-580,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD40L (CD154),TRAP1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD49b (ITGA2),12F1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+PDL1 (CD274),MIH1,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CXCR3 (CD183),1C6,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD226,DX11,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD1a,HI149,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD98,UM7F8,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CD49a,SR84,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+CXCR4,12G5,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+B7-H4,MIH43,Pre-sorted CD4+ T-cell (T1D and healthy donor),BD Bioscience,Trzupek_2020
+ CD28,CD28.2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD27,M-T271,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD197 (CCR7),3D12,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD161,DX12,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD69,FN50,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD196 (CCR6),11A9,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD152 (CTLA-4),BNI3,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD45RO,UCHL1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD194 (CCR4),1G1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD185 (CXCR5),RF8B2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD25,M-A251,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD127,HIL-7R-M21,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD45RA,HI100,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD24,ML5,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD275 (B7-H2),2D3/B7-H2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD33,WM53,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD39,TU66,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD5,UCHT2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD62L,DREG-56,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD7,M-T701,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD80,L307.4,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD86,FUN1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD90,5E10,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ ICOS (CD278),DX29,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD38,HIT2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+PD-1 (CD279),EH12.1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+OX40 (CD134),ACT35,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+PDL2 (CD273),MIH18,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+TNFRSF9 (CD137),4B4-1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+TIM3 (CD366),7D3,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD95 (FAS),DX2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD126 (IL6R),M5,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+GITR (CD357),V27-580,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD40L (CD154),TRAP1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD49b (ITGA2),12F1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+PDL1 (CD274),MIH1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CXCR3 (CD183),1C6,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD226,DX11,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD1a,HI149,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD98,UM7F8,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD49a,SR84,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CXCR4,12G5,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+B7-H4,MIH43,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+LAG-3,T47-530,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD117 (c-kit),YB5.B8,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+TCRgd,B1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CR2 (CD21),B-ly4,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+FASL (CD178),NOK-1,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD103,Ber-ACT8,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD14,MpP9,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD8,RPA-T8,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD10,HI10a,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD11b (Mac-1),M1/70,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD11c,B-ly6,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD13,WM15,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD16,3G8,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD20,2H7,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD34,581,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD56 (NCAM-1),NCAM16.2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD4,SK3,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD3,SK7,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+IgD,IA6-2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+IgG,G18-145,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD32,FLI8.26,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+ CD335 (NKp46),9-E2,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD26 (DPP4),M-A261,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD49d,9F10,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020
+CD94 (KLRD1),HP-3D9,Sorted CD45+ immune cells (two CD patients),BD Bioscience,Trzupek_2020

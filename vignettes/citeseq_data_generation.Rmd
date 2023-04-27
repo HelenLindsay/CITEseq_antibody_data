@@ -10,7 +10,7 @@ vignette: >
 # CITEseq data set
 
 This document describes how we generated the citeseq data set used in the
-software package `r AbNames` and the data package `r CITEseq`.  This data set
+software package `AbNames` and the data package `CITEseq`.  This data set
 is a curated collection of antibody names from publicly available CITE-seq
 data sets.  Generating this data set involved several steps:
 
@@ -31,8 +31,14 @@ to file encoding issues.  We have also converted Greek symbols to letters.
 We rename columns from individual antibody clone tables for consistency between experiments. 
 
 ```{r}
-
+source("01_unify_adt_clones.R")
 ```
+
+## Matching antibody clone names with data names
+
+The directory `inst/extdata/protein_names` contains the feature names from the
+antibody derived tag expression matrices.  These files are named according to
+the study accessions.
 
 ## Correcting errors by comparison between data sets
 
@@ -117,3 +123,5 @@ CHECK IF THERE IS A MATCH TO THE FULL PROTEIN, ONLY USE SUBUNIT IF THERE IS
 NOT
 
 Does merging in manual matches create duplicate rows?
+
+Match short names with CITEseq package.
