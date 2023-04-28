@@ -15,8 +15,9 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    AbNames (>= 0.3.0),
     dplyr,
+    readr,
+    readxl,
     stringr,
     tidyr
 Remotes:  

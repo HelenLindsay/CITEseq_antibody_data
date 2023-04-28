@@ -1,0 +1,7 @@
+ID,filename,TotalSeq_Cat,Source,Notes,,
+10x19Nov2018-2,vdj_v1_hs_pbmc2_5gex_protein_feature_ref.csv,C,PBMC healthy donor,,,
+10x19Nov2018,pbmc_10k_protein_v3_feature_ref.csv,B,PBMC healthy donor,,,
+10x24July2019,vdj_v1_hs_pbmc3_protein_feature_ref.csv,C,PBMC healthy donor,Antibodies only,,
+10x24July2019,vdj_nextgem_hs_pbmc3_protein_feature_ref.csv,C,PBMC healthy donor,Antibodies only,,
+10x29May2019,5k_pbmc_protein_v3_feature_ref.csv,B,PBMC healthy donor,,,
+10x7July2020,Parent_SC5_PBMC_feature_ref.csv,,PBMC healthy donor,,,

@@ -31,16 +31,17 @@ library("AbNames")
 
 # Read in the ADT clone tables ----
 # TotalC is a table of a standard antibody panel from BioLegend
-adt_clone_fnames <- list.files("ADT_clones", full.names = TRUE)
+clone_dir <- "inst/extdata/ADT_clones"
+adt_clone_fnames <- list.files(clone_dir, full.names = TRUE)
 adt_clone_fnames <- adt_clone_fnames[! grepl("TotalSeq_C|merged",
                                              adt_clone_fnames)]
 adt_clones <- lapply(adt_clone_fnames, readr::read_delim)
 names(adt_clones) <- gsub("\\..*", "", basename(adt_clone_fnames))
 
-totalseqC <- list.files("ADT_clones", full.names = TRUE,
-                        pattern = "^TotalSeq_C")
+totalseqC <- list.files(clone_dir, full.names = TRUE, pattern ="^TotalSeq_C")
 
-tenx_clone_fnames <- list.files("10x_antibody_info", full.names = TRUE)
+tenx_clone_fnames <- list.files("inst/extdata/10x_antibody_info",
+                                full.names=TRUE)
 tenx_clones <- lapply(tenx_clone_fnames, readr::read_delim)
 names(tenx_clones) <- gsub("\\..*", "", basename(tenx_clone_fnames))
 
@@ -276,8 +277,8 @@ leader <- adt_clones$Leader_2021 %>%
 # LeCoz_2021 ----
 
 # Totalseq C universal cocktail, 132 + 8 isotype control
-total_c <- read_delim(paste0("ADT_clones/",
-  "TotalSeq_C_Human_Universal_Cocktail_v1_137_Antibodies_399905_Barcodes.csv"))
+total_c <- read_delim(paste0(clone_dir,
+  "/TotalSeq_C_Human_Universal_Cocktail_v1_137_Antibodies_399905_Barcodes.csv"))
 
 lecoz <- total_c %>%
   dplyr::rename(Barcode_Sequence = Barcode) %>%
@@ -854,19 +855,9 @@ all_clones <- all_clones %>%
                     Isotype_Control)
 
 ac <- all_clones %>%
-    #dplyr::select(Antigen, Study, Clone, Cat_Number, Oligo_ID,
-    #              Barcode_Sequence, TotalSeq_Cat, Vendor, RRID,
-    #              Isotype_Control, Lot, Custom_Antibody, Reactivity, TEMP) %>%
     dplyr::relocate(Study, Antigen, Clone, Cat_Number,
                     Oligo_ID, TotalSeq_Cat) %>%
     dplyr::arrange(Antigen, Cat_Number)
 
-readr::write_delim(all_clones, file = "ADT_clones/merged_adt_clones.tsv")
-
-#readr::write_delim(ac, file = "~/Analyses/AbNames/inst/extdata/citeseq.csv",
-#                   delim = ",")
-
-# To do:
-# Shangguan concentration extract dilution, move rest to Concentration
-# MOPC273 Hao IgG2a is an error?
-# CD8 - 146Nd Leader_2021 146Nd is a metal, cat number doesn't have the metal
+readr::write_delim(all_clones,
+                   sprintf("%s/merged_adt_clones.tsv", clone_dir))

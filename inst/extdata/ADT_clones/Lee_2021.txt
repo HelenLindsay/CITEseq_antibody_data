@@ -1,0 +1,14 @@
+Cat_Number Antibody_Category Reactivity Antigen
+368545 TotalSeq-C0048 human CD45 (clone: 2D1)
+300479 TotalSeq-C0034 human CD3
+302265 TotalSeq-C0050 human CD19
+344651 TotalSeq-C0045 human CD4
+344753 TotalSeq-C0046 human CD8
+362559 TotalSeq-C0047 human CD56 (NCAM)
+302649 TotalSeq-C0085 human CD25
+371521 TotalSeq-C0053 human CD11c
+101275 TotalSeq-C0014 mouse/human CD11b
+321147 TotalSeq-C0205 human CD206 (MMR)
+307663 TotalSeq-C0159 human HLA-DR
+353251 TotalSeq-C0148 human CD197 (CCR7)
+304163 TotalSeq-C0063 human CD45RA
