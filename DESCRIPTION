@@ -1,5 +1,5 @@
-Package: CITEseq_antibody_data
-Title: Creating The CITEseq Antibody Table
+Package: CITEseqAntibodies
+Title: Creating the CITEseq Antibody Table
 Version: 0.0.0.9000
 Authors@R: 
     person("Helen", "Lindsay", , "helen.lindsay@chuv.ch",
@@ -15,4 +15,9 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    dplyr
+    AbNames (>= 0.3.0),
+    dplyr,
+    stringr,
+    tidyr
+Remotes:  
+    HelenLindsay/AbNames
