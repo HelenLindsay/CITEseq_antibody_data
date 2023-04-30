@@ -1,13 +1,8 @@
 # Notes ----
 # This script formats the antibody clone tables from each data set
-# into a consistent format.
+# into a single table wtih consistently named columns
 
-# Common column names ----
-# Additional columns are specific to one study.
-# Column "Gene_Name" is used when a gene symbol is provided.
-# At this stage in the data preparation we do not check if this is the
-# official gene symbol.
-
+# Common column names
 # Antigen
 # Clone
 # Cat_Number: catalogue number
@@ -24,9 +19,19 @@
 # Isotype: the isotype of the antibody
 # Isotype_Control (logical): is the antibody an isotype control?
 
+# Additional columns are specific to one study.
+# Column "Gene_Name" is used when a gene symbol is provided.
+# At this stage in the data preparation we do not check if this is the
+# official gene symbol.
+
 # Code ----
 
-library("tidyverse")
+existing <- ls()
+
+library("dplyr")
+library("readr")
+library("tidyr")
+library("stringr")
 library("AbNames")
 
 # Read in the ADT clone tables ----
@@ -47,6 +52,7 @@ names(tenx_clones) <- gsub("\\..*", "", basename(tenx_clone_fnames))
 
 tenx_id_to_fname <- tenx_clones$`10x_files`
 tenx_clones$`10x_files` <- NULL
+
 
 # Arunachalam_2020 ----
 arunachalam <- adt_clones$Arunachalam_2020
@@ -163,7 +169,7 @@ granja <- granja %>%
                   TotalSeq_Cat = gsub(".*([ABC])$", "\\1", TotalSeq_Cat),
                   Vendor = "BioLegend") %>%
     dplyr::mutate_if(is.factor, as.character) %>%
-    dplyr::select(-Condition) # LATER: INCLUDE EXPERIMENTAL NAMES
+    dplyr::select(-Condition)
 
 
 # Hao_2021 ----
@@ -277,8 +283,8 @@ leader <- adt_clones$Leader_2021 %>%
 # LeCoz_2021 ----
 
 # Totalseq C universal cocktail, 132 + 8 isotype control
-total_c <- read_delim(paste0(clone_dir,
-  "/TotalSeq_C_Human_Universal_Cocktail_v1_137_Antibodies_399905_Barcodes.csv"))
+total_c <- read_delim(paste0("ADT_clones/",
+  "TotalSeq_C_Human_Universal_Cocktail_v1_137_Antibodies_399905_Barcodes.csv"))
 
 lecoz <- total_c %>%
   dplyr::rename(Barcode_Sequence = Barcode) %>%
@@ -617,11 +623,6 @@ vanuytsel <- adt_clones$Vanuytsel_2020 %>%
                   Cat_Number = as.character(Cat_Number)) %>%
     dplyr::select(-Gene)
 
-# Wang_2022 DATA ONLY ON REQUEST, NOT INCLUDING FOR NOW ----
-# Note that Cat_Number and RRID provided here refers to the equivalent
-# flow cytometric antibodies.  RRID appears to be the same for conjugated and
-# not
-
 # Wang_2020_PBMC ----
 
 wang <- adt_clones$Wang_2020_PBMC
@@ -652,10 +653,8 @@ witkowski <- witkowski %>%
     dplyr::select(-temp)
 
 # Wu_2021 ----
-# Note that we did not receive data from the study originally designated
-# as Wu_2021_a
 
-wu_2021 <- adt_clones$Wu_2021_b
+wu_2021 <- adt_clones$Wu_2021
 wu_2021 <- wu_2021 %>%
     dplyr::rename(Ensembl_ID = `Ensembl Gene Id`) %>%
     dplyr::mutate(Vendor = "BioLegend",
@@ -667,8 +666,6 @@ wu_2021 <- wu_2021 %>%
     # Biolegend_name is not necessary as Cat_Number is present
     dplyr::select(-Barcode_number, -Biolegend_name) %>%
     dplyr::select(-Panel_inclusion, -Barcode_V1, -Barcode_V2)
-
-
 
 
 # 10x genomics data sets ----
@@ -730,8 +727,6 @@ all_clones <- Reduce(full_join, all_dat) %>%
 
         Reactivity = tolower(Reactivity),
         Reactivity = gsub(", ", "/", Reactivity),
-        #Reactivity = ifelse(Reactivity == "mouse/human",
-        #                                  "human/mouse", Reactivity),
 
         # Import errors:
         Clone = ifelse(Clone %in% c("50000000000", "5E+10"), "5E10", Clone),
@@ -859,5 +854,19 @@ ac <- all_clones %>%
                     Oligo_ID, TotalSeq_Cat) %>%
     dplyr::arrange(Antigen, Cat_Number)
 
-readr::write_delim(all_clones,
-                   sprintf("%s/merged_adt_clones.tsv", clone_dir))
+
+readr::write_delim(ac,
+                   file = sprintf("%s/merged_adt_clones.tsv", clone_dir),
+                   delim = ",")
+
+# Clean up
+rm(list = setdiff(ls(), c(existing, all_clones)))
+
+
+#readr::write_delim(ac, file = "~/Analyses/AbNames/inst/extdata/citeseq.csv",
+#                   delim = ",")
+
+# To do:
+# Shangguan concentration extract dilution, move rest to Concentration
+# MOPC273 Hao IgG2a is an error?
+# CD8 - 146Nd Leader_2021 146Nd is a metal, cat number doesn't have the metal

@@ -35,9 +35,12 @@ to file encoding issues.  We have also converted Greek symbols to letters.
 We rename columns from individual antibody clone tables for consistency between
 experiments. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 # This script generates a combined ADT clone table
-source("data-raw/01_unify_adt_clones.R")
+#source("data-raw/01_unify_adt_clones.R")
+source("../inst/scripts/01_unify_adt_clones.R")
+
+# After running this script, we have a combined clone table:
 ls()
 head(all_clones)
 ```
