@@ -51,7 +51,13 @@ head(all_clones)
 
 The directory `inst/extdata/protein_names` contains the feature names from the
 antibody derived tag expression matrices.  These files are named according to
-the study accessions.
+the study accessions.  We generally tried to match data to clones by
+reformatting the data, e.g. removing spaces and prefixes.  If we were unable to
+match automatically, the relevant code includes a table called "manual_matches".
+
+```{r}
+
+```
 
 ## Correcting errors by comparison between data sets
 

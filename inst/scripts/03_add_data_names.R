@@ -1,6 +1,8 @@
 # This script manually matches the Antibody names with the Antibody Derived Tag
 # (ADT) names used in the data.
 
+if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
+
 # Libraries ----
 
 library("dplyr")
@@ -20,11 +22,20 @@ library("readr")
 #names(protein_names) <- protein_sce
 #protein_names <- split(protein_names, studies)
 
-protein_names <- read_rds("inst/extdata/protein_names.rds")
+all_protein_names <- read_rds("../inst/extdata/protein_names.rds")
 studies <- names(protein_names)
+protein_files <- unlist(all_protein_names, recursive = FALSE)
+keep_files <- ! grepl("[Mm]ouse", names(protein_files))
+filename_to_study <- rep(studies, lengths(all_protein_names))
+protein_names <- split(protein_files[keep_files],
+                    filename_to_study[keep_files])
+ab_fnames <- split(names(protein_files)[keep_files],
+                   filename_to_study[keep_files])
+
+protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
 
 # Match study with data file names ----
-acc_to_name <- read_delim("inst/extdata/metadata/papers.csv") %>%
+acc_to_name <- read_delim("../inst/extdata/metadata/papers.csv") %>%
     dplyr::mutate(Accession =
                     dplyr::coalesce(Accession, gsub("_", "", Name))) %>%
     dplyr::filter(Accession %in% studies)
@@ -32,7 +43,8 @@ acc_to_study <- structure(acc_to_name$Accession, names = acc_to_name$Name)
 
 # Load citeseq data ----
 citeseq <- readr::read_delim(
-    file = "inst/extdata/ADT_clones/merged_adt_clones.tsv") %>%
+    file = "../inst/extdata/ADT_clones/merged_adt_clones.tsv") %>%
+    # If rerunning, remove existing data names
     dplyr::select(-any_of("Data_Name"))
 
 # Check for missing studies ---- Wu_2021 is in citeseq not data
@@ -62,9 +74,9 @@ duplicated_ab <- c("Granja_2019", "Hao_2021", "Leader_2021",
 # CD57--Ber-ACT8-TSA - Ber-ACT8 is the clone for CD103, not CD57
 
 nm <- "Arunachalam_2020"
-print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 arunachalam_2020 <- citeseq %>% dplyr::filter(Study == nm)
 
@@ -111,7 +123,9 @@ buus_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
     dplyr::mutate(Data_Name = gsub("Iso", "", Antigen))
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 
 # Check that all are accounted for
 setdiff(data_names, buus_2021$Data_Name)
@@ -123,7 +137,8 @@ setdiff(buus_2021$Data_Name, data_names)
 nm <- "Cadot_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 cadot_2020 <- citeseq %>%
   dplyr::filter(Study == nm) %>%
@@ -139,11 +154,12 @@ all(data_names %in% cadot_2020$Data_Name)
 # 4 antibodies profiled in mouse hippocampus.
 
 nm <- "Chung_2021"
-print(nm)
 
 # Select the human antibodies:
-fnames <- ab_fnames[[acc_to_study[[nm]]]]
-data_names <- read_rds(fnames[! grepl("mouse", fnames)])
+
+#fnames <- ab_fnames[[acc_to_study[[nm]]]]
+#data_names <- read_rds(fnames[! grepl("mouse", fnames)])
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 chung_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
@@ -158,8 +174,9 @@ setdiff(chung_2021$Antigen, data_names)
 nm <- "Fernandez_2019"
 print(nm)
 
-data_names <- unique(unlist(
-    lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(
+#    lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 fernandez_2020 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
@@ -174,7 +191,9 @@ setdiff(fernandez_2020$Antigen, data_names)
 nm <- "Fidanza_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          Antigen = gsub("\\.TotalA", "", data_names))
 
@@ -190,7 +209,8 @@ fidanza_2020 <- dplyr::full_join(fidanza_2020, data_names)
 nm <- "Frangieh_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 frangieh_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
@@ -224,7 +244,9 @@ granja_samples <- gsub(".*scADT_(.*)\\.rds", "\\1", granja_nms)
 granja_ts <- ifelse(grepl("CD34|MPAL", granja_samples), "A", "B")
 
 # According to the data names, the same 16 panel is used in all
-data_names <- lapply(granja_nms, read_rds)
+#data_names <- lapply(granja_nms, read_rds)
+data_names <- all_protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = unlist(data_names),
                          TotalSeq_Cat = rep(granja_ts, lengths(data_names)),
                          Sample = rep(granja_samples, lengths(data_names))) %>%
@@ -261,7 +283,9 @@ granja_2019 <- granja_2019 %>%
 # CD193 and CD90 occur in the antibody table but not in the data.
 
 nm <- "Hao_2021"
-data_names <- (unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- (unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- all_protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names)
 
 # Some clones got converted to scientific notation somewhere along the line
@@ -269,7 +293,8 @@ hao_portal_patch <- tibble(Cat_Number =  c("310729", "352207",
                                            "331943", "328135"),
                            Clone = c("5E8", "10E2", "9E2", "5E10"))
 
-hao_portal <- read_delim("annotation/Hao_portal_antibody_info.csv") %>%
+portal_fname <- "../inst/extdata/protein_names_extra/Hao_portal_antibody_info.csv"
+hao_portal <- read_delim(portal_fname) %>%
     dplyr::rename(Data_Name = "#protein",
                   Cat_Number = Catalog,
                   Antigen = Specificity) %>%
@@ -300,7 +325,9 @@ hao_2021 <- hao_2021 %>%
 nm <- "Holmes_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     dplyr::mutate(Antigen = gsub("(_Human)?\\..*", "", Data_Name),
                   Antigen = gsub(".*_([^_]+)", "\\1", Antigen))
@@ -320,7 +347,9 @@ holmes_2020 <- holmes_2020 %>%
 nm <- "Kaufmann_2021"
 print(nm)
 
-data_names <- (unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- (unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     dplyr::mutate(Short = gsub("ADT-", "", Data_Name),
                 Short = gsub("-", "", Short))
@@ -347,7 +376,8 @@ kaufmann_2021 <- kaufmann_2021 %>%
 nm <- "Kotliarov_2020"
 print(nm)
 
-data_names <- (unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- (unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("_PROT", "", data_names)) %>%
@@ -379,7 +409,8 @@ kotliarov_2020 <- kotliarov_2020 %>%
 nm <- "Krebs_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 krebs_2020 <- data.frame(Antigen = gsub("ADT-", "", data_names),
                          Vendor = "BioLegend",
@@ -393,7 +424,9 @@ krebs_2020 <- data.frame(Antigen = gsub("ADT-", "", data_names),
 nm <- "Lawlor_2021"
 print(nm)
 
-data_names <- unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds))
+#data_names <- unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          Antigen = gsub("-[ACTG]+$", "", data_names))
 
@@ -422,10 +455,11 @@ lawlor_2021 <- lawlor_2021 %>%
 # a TotalSeq antibody
 
 nm <- "Leader_2021"
-print(nm)
 
-leader_fnames <- ab_fnames[[acc_to_study[[nm]]]]
-data_names <- lapply(leader_fnames, read_rds)
+#leader_fnames <- ab_fnames[[acc_to_study[[nm]]]]
+#data_names <- lapply(leader_fnames, read_rds)
+data_names <- all_protein_names[[acc_to_study[[nm]]]]
+
 # Get patient and batch ID from filenames
 batch_id <- rep(gsub(".*batch_ID_([0-9]+).*", "\\1", leader_fnames),
                 lengths(data_names))
@@ -443,7 +477,7 @@ data_names %>%
 
 # Load per-patient CITE-seq panels
 
-cite_panels <- "sample_info/Leader_2021_citeseq_panels.xlsx"
+cite_panels <- "../inst/extdata/protein_names_extra/Leader_2021_citeseq_panels.xlsx"
 
 cite_sheets <- excel_sheets(cite_panels)
 cite_panels <- lapply(cite_sheets[2:length(cite_sheets)], function(nm){
@@ -523,7 +557,9 @@ leader_2021 <- leader_2021 %>%
 nm <- "LeCoz_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("anti-[a-z-]+_", "", data_names)) %>%
     dplyr::mutate(TEMP = gsub("_", " ", TEMP),
@@ -550,7 +586,9 @@ lecoz_2021 <- lecoz_2021 %>%
 # Lee_2021 ----
 
 nm <- "Lee_2021"
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("-[-]?.*", "", data_names))
 
@@ -571,7 +609,8 @@ lee_2021 <- lee_2021 %>%
 # but I'm not completely sure about this.
 
 nm <- "Liu_2021"
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 # Check that it's safe to strip off the .1 ending from data names
 # any(AbNames:::.dups(gsub("\\.1", "", data_names)))
@@ -623,7 +662,9 @@ liu_2021 <- liu_2021 %>%
 nm <- "Mair_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     dplyr::filter(grepl("pAbO$", Data_Name)) %>%
     tidyr::separate(Data_Name, into = c("Antigen", "Clone", "RRID", "Tag"),
@@ -663,7 +704,9 @@ mimitou_patch <- tibble::tribble(~Antigen, ~TEMP,
                                  "CD8A", "CD8",
                                  "PD-L1", "B7.H1..PD.L1.")
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = data_names) %>%
     dplyr::rows_update(data_names_patch, by = "Data_Name")
@@ -725,7 +768,9 @@ mimitou_patch <- tibble::tribble(~Data_Name, ~TEMP,
 
 
 nm <- "Mimitou_2021"
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("\\(.*\\)", "", data_names)) %>%
     dplyr::rows_update(mimitou_patch, by = "Data_Name")
@@ -751,7 +796,9 @@ print(nm)
 nathan_patch <- data.frame(Data_Name = c("MouseIgG_protein", "TCRab_protein"),
                            TEMP = c("Mouse", "TCR"))
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("[_\\.].*", "", data_names)) %>%
     dplyr::rows_update(nathan_patch, by = "Data_Name")
@@ -774,7 +821,9 @@ nathan_2021 <- nathan_2021 %>%
 nm <- "Papalexi_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names)
 
 papalexi_2021 <- citeseq %>%
@@ -797,7 +846,9 @@ papalexi_2021 <- papalexi_2021 %>%
 nm <- "Pei_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          Antigen = gsub("_ADT", "", data_names))
 
@@ -822,7 +873,8 @@ pei_2020 <- dplyr::left_join(pei_2020, data_names, by = "Antigen")
 nm <- "Poch_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 data_names <- data.frame(Data_Name = data_names,
                          Study = "Poch_2021",
@@ -880,11 +932,11 @@ pombo_patch <- data.frame(Data_Name = c("B7.H4",
                                    "TCRg9"))
 
 nm <- "PomboAntunes_2021"
-print(nm)
 
-pombo_fnames <- ab_fnames[[acc_to_study[[nm]]]]
+#pombo_fnames <- ab_fnames[[acc_to_study[[nm]]]]
 #"GSE163120_GSE163120_Human-GSM4972212_Citeseq_Human"
-pombo_human <- pombo_fnames[grepl("Human", pombo_fnames)]
+#pombo_human <- pombo_fnames[grepl("Human", pombo_fnames)]
+pombo_human <- protein_names[[acc_to_study[[nm]]]]
 
 # Oligo ID is present if there are two different clones used
 data_names <- read_rds(pombo_human)
@@ -933,7 +985,8 @@ pomboAntunes_2021 <- pomboAntunes_2021 %>%
 nm <- "Pont_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 pont_2020 <- citeseq %>%
   dplyr::filter(Study == nm)
@@ -960,7 +1013,9 @@ pont_2020 <- dplyr::full_join(pont_2020, data_names)
 nm <- "Qi_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          Antigen = gsub("CD11b/Mac-1", "CD11b",
                                         gsub("\\.1", "", data_names)))
@@ -979,7 +1034,8 @@ qi_2020 <- qi_2020 %>%
 nm <- "RinconArevalo_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 rinconArevalo_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
@@ -994,7 +1050,8 @@ setdiff(rinconArevalo_2021$Data_Name, data_names)
 nm <- "Shangguan_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 shangguan_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
@@ -1083,7 +1140,9 @@ stephenson_patch <- data.frame(Data_Name = c("HLA-ABC",
 nm <- "Stephenson_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("AB_", "", data_names)) %>%
     dplyr::rows_update(stephenson_patch)
@@ -1106,7 +1165,8 @@ stephenson_2021 <- stephenson_2021 %>%
 nm <- "Stoeckius_2017"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 # CD29 is only in the mouse experiment and isn't in this data set
 stoeckius_2017_patch <- data.frame(Antigen = c("CD3e", "CD8a","CD29"),
@@ -1128,7 +1188,9 @@ stoeckius_2017 <- stoeckius_2017 %>%
 nm <- "Stoeckius_2018"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <-  data.frame(Data_Name = data_names,
                           Antigen = gsub("\\.[ACTG]+$", "", data_names)) %>%
     dplyr::mutate(Antigen = gsub("\\.", "-", Antigen))
@@ -1148,7 +1210,9 @@ stoeckius_2018 <-
 nm <- "Stuart_2019"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     dplyr::mutate(Antigen = ifelse(grepl("HLA", Data_Name),
                                    gsub("\\.", "-", Data_Name),
@@ -1187,7 +1251,9 @@ data2clone <- tibble::tribble(~Data_Name, ~REPLACE,
                               "RATIGG2BKISOTYPECTRL",
                               "TSLPR_CRL2", "TSLPRTSLPR")
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = toupper(data_names)) %>%
     # Strip off trailing -1 (there are no duplicated antibodies)
@@ -1219,7 +1285,9 @@ su_2020 <- su_2020 %>%
 nm <- "Trzupek_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     tidyr::separate(Data_Name, sep = "\\|", remove = FALSE,
                     into = c("TEMP", "HGNC_SYMBOL",
@@ -1246,7 +1314,9 @@ setdiff(data_names$Data_Name, trzupek_2020$Data_Name)
 nm <- "Trzupek_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[["Trzupek2021"]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[["Trzupek2021"]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     tidyr::separate(Data_Name, sep = "\\|", remove = FALSE,
                     into = c("TEMP", "HGNC_ID", "Oligo_ID", "delme")) %>%
@@ -1278,7 +1348,8 @@ trzupek_2021 <- trzupek_2021 %>%
 nm <- "Valenzi_2019"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
 
 valenzi_2019 <- data.frame(Antigen = gsub("-CITE", "", data_names),
                            Data_Name = data_names,
@@ -1304,7 +1375,9 @@ vanuytsel_patch <- data.frame(Data_Name = c("VECAD-TCCACTCATTCTG",
 nm <- "Vanuytsel_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("-protein", "", data_names)) %>%
     dplyr::filter(! Data_Name == "unmapped") %>%
@@ -1328,7 +1401,9 @@ vanuytsel_2020 <- vanuytsel_2020 %>%
 nm <- "Wang_2020_PBMC"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          Antigen = gsub("-[ACTG]+$", "", data_names))
 
@@ -1349,7 +1424,9 @@ wang_2020 <- wang_2020 %>%
 nm <- "Witkowski_2020"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("ADT-", "", data_names)) %>%
     tidyr::separate(TEMP, into = c("TEMP", "Clone")) %>%
@@ -1397,7 +1474,9 @@ wu_patch <- data.frame(Data_Name = c("MHCII-AATAGCGAGCAAGTA",
 nm <- "Wu_2021"
 print(nm)
 
-data_names <- unique(unlist(lapply(ab_fnames[["Wu2021b"]], read_rds)))
+#data_names <- unique(unlist(lapply(ab_fnames[["Wu2021b"]], read_rds)))
+data_names <- protein_names[[acc_to_study[[nm]]]]
+
 data_names <- data.frame(Data_Name = data_names) %>%
     dplyr::filter(! Data_Name == "unmapped") %>%
     tidyr::separate(Data_Name, into = c("TEMP", "Barcode_Sequence"),

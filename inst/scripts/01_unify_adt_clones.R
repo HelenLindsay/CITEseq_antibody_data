@@ -27,6 +27,7 @@
 # Code ----
 
 existing <- ls()
+if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
 
 library("dplyr")
 library("readr")
@@ -36,7 +37,7 @@ library("AbNames")
 
 # Read in the ADT clone tables ----
 # TotalC is a table of a standard antibody panel from BioLegend
-if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
+
 
 clone_dir <- "../inst/extdata/ADT_clones"
 adt_clone_fnames <- list.files(clone_dir, full.names = TRUE)
