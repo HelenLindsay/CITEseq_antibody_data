@@ -320,6 +320,10 @@ lee <- lee %>%
     dplyr::select(-Antibody_Category) %>%
     dplyr::mutate_if(is.factor, as.character)
 
+# Li 2023 ----
+# clone information manually formatted from Sup Table 1
+
+li_2023 <- adt_clones$Li_2023
 
 # Liu_2021 ----
 
@@ -601,6 +605,11 @@ su <- su %>%
     dplyr::mutate(Antigen = ifelse(is.na(TEMP), Antigen, TEMP)) %>%
     dplyr::select(-TEMP)
 
+# Triana 2021 ----
+
+triana_2021 <- adt_clones$Trzupek_2021 %>%
+    dplyr::rename(Antigen = Antibody)
+
 # Trzupek_2020 ----
 
 # Trzupek has repeated entries for each subexperiment
@@ -616,6 +625,9 @@ trzupek_2020 <- trzupek_2020 %>%
 trzupek_2021 <- adt_clones$Trzupek_2021 %>%
     dplyr::mutate(Study = "Trzupek_2021",
                   Cat_Number = as.character(Cat_Number))
+
+# Ty 2023 ----
+ty_2023 <- adt_clones$Ty_2023
 
 # Valenzi_2019 ----
 
@@ -697,12 +709,12 @@ tenx_clones <- do.call(dplyr::bind_rows, tenx_clones) %>%
 
 all_dat <- list(arunachalam, buus, cadot, chung_2021, fernandez, fidanza,
                 frangieh, granja, hao, holmes_2020,
-                kaufmann, kotliarov, lawlor, leader, lecoz, lee, liu,
+                kaufmann, kotliarov, lawlor, leader, lecoz, lee, li_2023, liu,
                 mair, mimitou_2019, mimitou_2021, nathan, papalexi,
                 pei_2020, poch_2021, pombo, pont, qi_2020, rincon,
                 shangguan, stephenson, stoeckius_2017, stoeckius, stuart, su,
-                trzupek_2020, trzupek_2021, vanuytsel, wang, witkowski,
-                wu_2021, tenx_clones)
+                triana_2021, trzupek_2020, trzupek_2021, ty_2023, vanuytsel,
+                wang, witkowski, wu_2021, tenx_clones)
 
 all_clones <- Reduce(full_join, all_dat) %>%
     dplyr::mutate(

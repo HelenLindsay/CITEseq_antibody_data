@@ -3,13 +3,12 @@ library("AbNames")
 library("janitor")
 library("stringi")
 
+# To do: make sure human IDs are not assigned to non-human reactive Abs
 # To do: group and check differences in ALT_ID.
 # Chung c-Fos has wrong catalogue number?
 
-if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
-
-merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
-citeseq <- readr::read_delim(file = merged_clones)
+citeseq_fname <- system.file("extdata", "citeseq.csv", package = "AbNames")
+citeseq <- read.csv(citeseq_fname) %>% unique()
 
 # Remove non-ascii characters -----
 
@@ -111,15 +110,10 @@ citeseq <- dplyr::bind_rows(citeseq, citeseq_custom) %>%
 
 exp_nrow == nrow(citeseq)
 
-print(n_na)
-
-citeseq %>%
+n_na <- citeseq %>%
     dplyr::summarise(across(c("Cat_Number", "Clone", "Oligo_ID"),
                             ~sum(is.na(.x))))
 
-
-# Save annotated data set ----
-readr::write_delim(citeseq, file = merged_clones)
 
 # Hao_2021 and Liu_2021 have entries for some but not all Cat_Numbers
 # It appears info can be added for Liu, but Hao entries are custom
@@ -131,10 +125,44 @@ readr::write_delim(citeseq, file = merged_clones)
 #dplyr::mutate(n = ifelse(n == 1 & grepl("kappa", Suggested_Antigen),
 #                         100, n)) %>% # Prefer kappa if it's there
 
+
+# Create citeseq data set ----
+citeseq <- as.data.frame(citeseq)
+usethis::use_data(citeseq, overwrite = TRUE, compress = "bzip2")
+
+
 # HGNC:12102 = TRAV1-2 = TCR Va7.2?
 # TRAV24, TRAJ18 = TCRVa24-Ja18
 # HLA-DR = HLA-DRA?
 
-# For antigens like KIR2DL1/S1/S3/S5, want to split like subunit
+# For antigens like TCR alpha/beta, KIR2DL1/S1/S3/S5, want to split like subunit
+# CD66a_c_e
 # CD18 associates with CD11a (LFA-1) CD11-b (Mac-1)
 # CD3 (CD3E)__Nathan_2021 should match CD3D,E and G?
+
+# filling in suggested antigen
+
+#If entry above and below are the same, add the suggested antigen
+
+#all_clones <- all_clones %>%
+#    dplyr::ungroup() %>%
+#    dplyr::mutate(before = lead(Suggested_Antigen),
+#                  after = lag(Suggested_Antigen),
+#                  Suggested_Antigen =
+#                      ifelse(is.na(Suggested_Antigen) & before == after, before,
+#                             Suggested_Antigen)) %>%
+#    dplyr::select(-n, -before, -after, -AG_TEMP) %>%
+#    dplyr::relocate(Antigen, Suggested_Antigen, Cat_Number, Clone)
+
+
+# Cases:
+# The antigen only appears in one study
+# The antigen appears twice but has completely different names
+# (choose the gene? Or keep the form that is "^CD[0-9]+$")
+# CD314 - AN ERROR HAS PROPAGATED! FIXED FOR KOTLIAROV, WHICH STUDIES?
+# If clone and Antigen name are identical but totalseq cat different, fill
+
+# Notes ----
+# Granja has an anti-mouse antibody but reactivity is Human?
+#x %>% filter(Experiment == "Granja_2019", Antigen == "CD3")
+
