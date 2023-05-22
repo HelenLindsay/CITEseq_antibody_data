@@ -74,6 +74,10 @@ arunachalam <- arunachalam %>%
                     sep = "(?<=[ABC])") %>%
     dplyr::mutate_if(is.factor, as.character)
 
+# Bai_2022 ----
+
+bai <- adt_clones$Bai_2022
+
 # Buus_2021 ----
 
 buus <- adt_clones$Buus_2021
@@ -323,7 +327,11 @@ lee <- lee %>%
 # Li 2023 ----
 # clone information manually formatted from Sup Table 1
 
-li_2023 <- adt_clones$Li_2023
+li_2023 <- adt_clones$Li_2023 %>%
+    dplyr::mutate(Dilution = as.character(Dilution),
+                  Dilution = gsub("^([0-9]+:[0-9]+):.*", "\\1", Dilution)) %>%
+    dplyr::rename(Cat_Number = TotalSeqCat) %>%
+    dplyr::mutate(Cat_Number = as.character(Cat_Number))
 
 # Liu_2021 ----
 
@@ -421,6 +429,13 @@ nathan <- nathan %>%
     dplyr::select(Antigen, Clone, Cat_Number) %>%
     dplyr::mutate(Study = "Nathan_2021",
                   Cat_Number = as.character(Cat_Number))
+
+# Nettersheim_2022 ----
+
+# Preprocessed from supplementary table S1 by matching to TotalSeq C
+# universal set
+nettersheim <- adt_clones$Nettersheim_2022 %>%
+    dplyr::mutate(Cat_Number = as.character(Cat_Number))
 
 # Papalexi_2021 -----
 
@@ -608,7 +623,8 @@ su <- su %>%
 # Triana 2021 ----
 
 triana_2021 <- adt_clones$Trzupek_2021 %>%
-    dplyr::rename(Antigen = Antibody)
+    dplyr::mutate(Cat_Number = as.character(Cat_Number),
+                  Study = "Triana_2021")
 
 # Trzupek_2020 ----
 
@@ -627,7 +643,8 @@ trzupek_2021 <- adt_clones$Trzupek_2021 %>%
                   Cat_Number = as.character(Cat_Number))
 
 # Ty 2023 ----
-ty_2023 <- adt_clones$Ty_2023
+ty_2023 <- adt_clones$Ty_2023 %>%
+    dplyr::rename(TotalSeq_Cat = TotalSeqCat)
 
 # Valenzi_2019 ----
 
@@ -707,16 +724,17 @@ tenx_clones <- do.call(dplyr::bind_rows, tenx_clones) %>%
 
 # Merge tables and make formatting more consistent ----
 
-all_dat <- list(arunachalam, buus, cadot, chung_2021, fernandez, fidanza,
+all_dat <- list(arunachalam, bai, buus, cadot, chung_2021, fernandez, fidanza,
                 frangieh, granja, hao, holmes_2020,
                 kaufmann, kotliarov, lawlor, leader, lecoz, lee, li_2023, liu,
-                mair, mimitou_2019, mimitou_2021, nathan, papalexi,
+                mair, mimitou_2019, mimitou_2021, nathan, nettersheim, papalexi,
                 pei_2020, poch_2021, pombo, pont, qi_2020, rincon,
                 shangguan, stephenson, stoeckius_2017, stoeckius, stuart, su,
                 triana_2021, trzupek_2020, trzupek_2021, ty_2023, vanuytsel,
                 wang, witkowski, wu_2021, tenx_clones)
 
-all_clones <- Reduce(full_join, all_dat) %>%
+all_clones <- do.call(dplyr::bind_rows, all_dat) %>%
+#all_clones <- Reduce(full_join, all_dat) %>%
     dplyr::mutate(
         # remove unnecessary whitespace
         across(where(is.character), ~stringr::str_squish(.x)),
