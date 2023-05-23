@@ -1,0 +1,68 @@
+Oligo_ID,Antigen,ug_per_100_uL,Study,Vendor,TotalSeq_Cat
+0047,CD56,0.05,Colpitts_2023,BioLegend,C
+0149,CD161,0.125,Colpitts_2023,BioLegend,C
+0061,CD117 (c-kit),0.25,Colpitts_2023,BioLegend,C
+0083,CD16,0.025,Colpitts_2023,BioLegend,C
+0089,TIGIT (VSTM3),0.125,Colpitts_2023,BioLegend,C
+0101,CD335 (NKp46),0.05,Colpitts_2023,BioLegend,C
+0102,CD294 (CRTH2),1.25,Colpitts_2023,BioLegend,C
+0390,CD127 (IL-7Rα),0.05,Colpitts_2023,BioLegend,C
+0143,CD196 (CCR6),0.0125,Colpitts_2023,BioLegend,C
+0165,CD314 (NKG2D),0.53125,Colpitts_2023,BioLegend,C
+0802,CD336 (NKp44),1.25,Colpitts_2023,BioLegend,C
+0867,CD94,0.025,Colpitts_2023,BioLegend,C
+0153,KLRG1 (MAFA),0.1,Colpitts_2023,BioLegend,C
+0140,CD183 (CXCR3),0.05,Colpitts_2023,BioLegend,C
+0139,TCR g/d,0.425,Colpitts_2023,BioLegend,C
+0048,CD45,0.01,Colpitts_2023,BioLegend,C
+0584,TCR Va24-Ja18 (iNKT cell),0.5,Colpitts_2023,BioLegend,C
+0224,TCR a/b,0.015,Colpitts_2023,BioLegend,C
+0080,CD8a,0.025,Colpitts_2023,BioLegend,C
+0034,CD3,0.0125,Colpitts_2023,BioLegend,C
+0072,CD4,0.025,Colpitts_2023,BioLegend,C
+0055,CD138 (Syndecan-1),0.425,Colpitts_2023,BioLegend,C
+0081,CD14,0.025,Colpitts_2023,BioLegend,C
+0205,CD206 (MMR),0.25,Colpitts_2023,BioLegend,C
+0159,HLA-DR,0.106,Colpitts_2023,BioLegend,C
+0063,CD45RA,0.03125,Colpitts_2023,BioLegend,C
+0087,CD45RO,0.125,Colpitts_2023,BioLegend,C
+0085,CD25,0.025,Colpitts_2023,BioLegend,C
+0152,CD223 (LAG-3),0.125,Colpitts_2023,BioLegend,C
+0179,CX3CR1,0.0625,Colpitts_2023,BioLegend,C
+0387,TSLPR (TSLP-R),0.5,Colpitts_2023,BioLegend,C
+0371,CD49b,0.025,Colpitts_2023,BioLegend,C
+0389,CD38,0.05,Colpitts_2023,BioLegend,C
+0168,CD57 Recombinant,0.025,Colpitts_2023,BioLegend,C
+0575,CD49a,0.025,Colpitts_2023,BioLegend,C
+0171,CD278 (ICOS),0.0625,Colpitts_2023,BioLegend,C
+0360,CD357 (GITR),0.5,Colpitts_2023,BioLegend,C
+0176,CD39,0.0125,Colpitts_2023,BioLegend,C
+0146,CD69,0.025,Colpitts_2023,BioLegend,C
+0088,CD279 (PD-1),0.125,Colpitts_2023,BioLegend,C
+0151,CD152 (CTLA-4),0.25,Colpitts_2023,BioLegend,C
+0155,CD107a (LAMP-1),0.0625,Colpitts_2023,BioLegend,C
+0156,CD95 (Fas),0.125,Colpitts_2023,BioLegend,C
+0158,CD134 (OX40),0.125,Colpitts_2023,BioLegend,C
+0022,CD137L (4-1BB Ligand),0.5,Colpitts_2023,BioLegend,C
+0031,CD40,0.025,Colpitts_2023,BioLegend,C
+0355,CD137 (4-1BB),1.0625,Colpitts_2023,BioLegend,C
+0071,CD194 (CCR4),0.10625,Colpitts_2023,BioLegend,C
+0154,CD27,0.0425,Colpitts_2023,BioLegend,C
+0386,CD28,0.03125,Colpitts_2023,BioLegend,C
+0901,GARP (LRRC32),0.125,Colpitts_2023,BioLegend,C
+0246,CD122 (IL-2Rb),0.0625,Colpitts_2023,BioLegend,C
+0366,CD184 (CXCR4),0.5,Colpitts_2023,BioLegend,C
+0576,CD49d,0.0125,Colpitts_2023,BioLegend,C
+0007,"CD274 (B7-H1, PD-L1)",0.0625,Colpitts_2023,BioLegend,C
+1024,CD120b,0.255,Colpitts_2023,BioLegend,C
+0005,CD80,0.625,Colpitts_2023,BioLegend,C
+0142,CD32/ Fcg RII,0.10625,Colpitts_2023,BioLegend,C
+0161,CD11b,0.2,Colpitts_2023,BioLegend,C
+0162,CD64 (FCGR1A),0.10625,Colpitts_2023,BioLegend,C
+0006,CD86,0.042,Colpitts_2023,BioLegend,C
+0358,CD163,0.53125,Colpitts_2023,BioLegend,C
+0148,CD197 (CCR7),0.5,Colpitts_2023,BioLegend,C
+0577,CD73,0.5,Colpitts_2023,BioLegend,C
+0214,integrin b7,0.5,Colpitts_2023,BioLegend,C
+0169,CD366 (Tim-3),1,Colpitts_2023,BioLegend,C
+0145,CD103 (Integrin aE),0.5,Colpitts_2023,BioLegend,C
