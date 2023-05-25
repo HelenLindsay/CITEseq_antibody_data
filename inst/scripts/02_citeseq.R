@@ -1,3 +1,6 @@
+# This script matches antibody names with identifiers using the gene_aliases
+# table in the package AbNames
+
 library("tidyverse")
 library("AbNames")
 library("janitor")
@@ -7,16 +10,17 @@ library("stringi")
 # To do: group and check differences in ALT_ID.
 # Chung c-Fos has wrong catalogue number?
 
-citeseq_fname <- system.file("extdata", "citeseq.csv", package = "AbNames")
-citeseq <- read.csv(citeseq_fname) %>% unique()
+#citeseq_fname <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
+#citeseq <- read.csv(citeseq_fname) %>% unique()
 
 # Remove non-ascii characters -----
 
-citeseq <- citeseq %>%
+citeseq <- all_clones %>%
     dplyr::mutate(across(where(is.character),
                          ~stringi::stri_trans_general(.x,
                                 id="Any-Latin;Greek-Latin;Latin-ASCII")))
 
+# Add an ID by pasting study/antigen
 citeseq <- AbNames::addID(citeseq)
 citeseq_q <- citeseq %>% dplyr::select(ID, Antigen, Isotype_Control)
 # Note - this does not search for control antibodies

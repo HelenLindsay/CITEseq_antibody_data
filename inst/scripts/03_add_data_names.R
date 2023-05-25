@@ -1,6 +1,8 @@
 # This script manually matches the Antibody names with the Antibody Derived Tag
 # (ADT) names used in the data.
 
+# To do: TEMP may be the data name, remove after merging
+
 if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
 
 # Libraries ----

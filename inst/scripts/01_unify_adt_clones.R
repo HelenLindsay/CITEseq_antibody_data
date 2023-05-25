@@ -35,11 +35,11 @@ library("tidyr")
 library("stringr")
 library("AbNames")
 
+clone_dir <- "../inst/extdata/ADT_clones"
+
 # Read in the ADT clone tables ----
 # TotalC is a table of a standard antibody panel from BioLegend
 
-
-clone_dir <- "../inst/extdata/ADT_clones"
 adt_clone_fnames <- list.files(clone_dir, full.names = TRUE)
 
 adt_clone_fnames <- adt_clone_fnames[! grepl("TotalSeq_C|merged",
@@ -76,7 +76,8 @@ arunachalam <- arunachalam %>%
 
 # Bai_2022 ----
 
-bai <- adt_clones$Bai_2022
+bai <- adt_clones$Bai_2022 %>%
+    dplyr::mutate(Study = "Bai_2022")
 
 # Buus_2021 ----
 
@@ -127,6 +128,12 @@ chung_2021 <- chung_2021 %>%
     dplyr::mutate(Study = "Chung_2021",
                   Vendor = "BioLegend",
                   TotalSeq_Cat = "A")
+
+# Colpitts_2023 ----
+colpitts <- adt_clones$Colpitts_2023 %>%
+    # Make concentration consistent with other studies
+    dplyr::mutate(ug_per_100_uL = 10*ug_per_100_uL) %>%
+    dplyr::rename(Conc_ug_per_ml = ug_per_100_uL)
 
 # Fernandez_2019 ----
 fernandez <- adt_clones$Fernandez_2020
@@ -330,7 +337,8 @@ lee <- lee %>%
 li_2023 <- adt_clones$Li_2023 %>%
     dplyr::mutate(Dilution = as.character(Dilution),
                   Dilution = gsub("^([0-9]+:[0-9]+):.*", "\\1", Dilution)) %>%
-    dplyr::rename(Cat_Number = TotalSeqCat) %>%
+    dplyr::rename(Cat_Number = TotalSeqCat,
+                  Antigen = Antibody) %>%
     dplyr::mutate(Cat_Number = as.character(Cat_Number))
 
 # Liu_2021 ----
@@ -435,7 +443,10 @@ nathan <- nathan %>%
 # Preprocessed from supplementary table S1 by matching to TotalSeq C
 # universal set
 nettersheim <- adt_clones$Nettersheim_2022 %>%
-    dplyr::mutate(Cat_Number = as.character(Cat_Number))
+    dplyr::mutate(Cat_Number = as.character(Cat_Number),
+                  # Thr181 refers to phospho Tau (Thr181)
+                  Antigen = gsub("Thr181", "Tau Phospho (Thr181)", Antigen)) %>%
+    dplyr::select(-Universal)
 
 # Papalexi_2021 -----
 
@@ -684,7 +695,6 @@ witkowski <- witkowski %>%
                   TotalSeq_Cat = "A") %>% # Determined by looking up BioLegend
     dplyr::filter(! grepl("Hashtag", temp)) %>%
     dplyr::select(-temp)
-
 # Wu_2021 ----
 
 wu_2021 <- adt_clones$Wu_2021
@@ -724,8 +734,8 @@ tenx_clones <- do.call(dplyr::bind_rows, tenx_clones) %>%
 
 # Merge tables and make formatting more consistent ----
 
-all_dat <- list(arunachalam, bai, buus, cadot, chung_2021, fernandez, fidanza,
-                frangieh, granja, hao, holmes_2020,
+all_dat <- list(arunachalam, bai, buus, cadot, chung_2021, colpitts, fernandez,
+                fidanza, frangieh, granja, hao, holmes_2020,
                 kaufmann, kotliarov, lawlor, leader, lecoz, lee, li_2023, liu,
                 mair, mimitou_2019, mimitou_2021, nathan, nettersheim, papalexi,
                 pei_2020, poch_2021, pombo, pont, qi_2020, rincon,
@@ -734,7 +744,6 @@ all_dat <- list(arunachalam, bai, buus, cadot, chung_2021, fernandez, fidanza,
                 wang, witkowski, wu_2021, tenx_clones)
 
 all_clones <- do.call(dplyr::bind_rows, all_dat) %>%
-#all_clones <- Reduce(full_join, all_dat) %>%
     dplyr::mutate(
         # remove unnecessary whitespace
         across(where(is.character), ~stringr::str_squish(.x)),
@@ -768,8 +777,13 @@ all_clones <- do.call(dplyr::bind_rows, all_dat) %>%
         Clone = ifelse(Clone == "9E+02", "9E2", Clone),
         Clone = ifelse(Clone %in% c("1E+03", "1000"), "10E2", Clone),
 
-        Antigen = replaceGreekSyms(Antigen, 'sym2letter'))
+        Antigen = replaceGreekSyms(Antigen, 'sym2letter')) %>%
 
+    # If Isotype column includes species, put the species into "Origin_Species"
+    tidyr::separate(Isotype, into = c("ORI_SP", "Isotype"),
+                    sep = " (?=Ig)", fill = "left") %>%
+    dplyr::mutate(Origin_Species = dplyr::coalesce(Origin_Species, ORI_SP)) %>%
+    dplyr::select(-ORI_SP)
 
 # Check expected number of rows
 sum(sapply(all_dat, nrow)) == nrow(all_clones)
@@ -792,7 +806,8 @@ all_clones <- all_clones %>%
                     Isotype_Control &
                       grepl("Armenian Hamster|^[Aa]rm", Antigen) ~
                          "armenian hamster",
-                    TRUE ~ Reactivity))
+                    TRUE ~ Reactivity)) %>%
+    dplyr::select(-TEMP)
 
 # Fix manually identified mistakes or inconsistencies ----
 
@@ -896,7 +911,6 @@ readr::write_delim(all_clones,
 # Clean up
 rm(list = setdiff(ls(), c(existing, "all_clones")))
 
-# To do:
-# Shangguan concentration extract dilution, move rest to Concentration
+# Notes:
 # MOPC273 Hao IgG2a is an error?
 # CD8 - 146Nd Leader_2021 146Nd is a metal, cat number doesn't have the metal
