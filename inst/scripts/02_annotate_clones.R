@@ -140,7 +140,7 @@ citeseq %>%
 merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
 readr::write_delim(citeseq, file = merged_clones)
 
-rm(list = setdiff(c(existing, "citeseq")))
+rm(list = setdiff(ls(), "citeseq"))
 
 # Hao_2021 and Liu_2021 have entries for some but not all Cat_Numbers
 # It appears info can be added for Liu, but Hao entries are custom

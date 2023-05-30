@@ -4,6 +4,8 @@
 # https://github.com/bernibra/CITE-wrangling
 
 # To do: TEMP may be the data name, remove after merging
+# Note: Wu_2021_a provided data on request
+
 
 if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
 
@@ -902,13 +904,16 @@ poch_aj <- dplyr::anti_join(data_names, poch_2021, by = "Data_Name")
 poch_2021 <- poch_2021 %>%
     dplyr::bind_rows(poch_aj)
 
-# PomboAntunes_2021 DON'T SWAP ORDER IN REACTIVITY - ONLY HUMAN SO FAR ----
+# PomboAntunes_2021 ----
 
 # Study includes a mouse and and a human panel, here only matching the human
 # Includes the same antibody with different oligo ID
 # Isotype controls are not in the human data.
 # Integrin beta 7 is listed as Integrin-b7 (mouse) IntegrinBeta7 (human) -
 # (based on capitalisation of gene name Itgb7 / ITGB7)
+# Names in Reactivity indicate panel e.g. mouse/human versus human/mouse
+# Some isotype controls appear in the clone table but not the data,
+# possibly used in the mouse panel
 
 pombo_patch <- data.frame(Data_Name = c("B7.H4",
                                         "CD11a.CD18",
@@ -970,7 +975,7 @@ pomboAntunes_2021 <- citeseq %>%
 # Everything in the data is now in TEMP
 x <- pomboAntunes_2021 %>%
     dplyr::filter(grepl("^human|isotype", Reactivity) &
-                    Gene_Name == toupper(Gene_Name)) %>%
+                    (Gene_Name == toupper(Gene_Name) | is.na(Gene_Name)) ) %>%
     dplyr::pull(TEMP)
 
 setdiff(x, data_names$TEMP)
@@ -1462,7 +1467,7 @@ witkowski_2020 <- witkowski_2020 %>%
 # Data is missing some of the reported antibodies
 # By private communication, the authors told us that either -
 #  - the antibody was included but had no counts
-#  - the antibody was not included but was present through contaimination
+#  - the antibody was not included but was present through contamination
 
 # It is not clear from the data whether the isotype controls are mouse or rat
 # as some are missing
@@ -1480,7 +1485,7 @@ wu_patch <- data.frame(Data_Name = c("MHCII-AATAGCGAGCAAGTA",
                                   "FCERIA", "CD40L", "CD277", "CD21",
                                   "TCRVA24JA18", "CD8A"))
 
-nm <- "Wu_2021"
+nm <- "Wu_2021_b"
 print(nm)
 
 #data_names <- unique(unlist(lapply(ab_fnames[["Wu2021b"]], read_rds)))
@@ -1510,14 +1515,31 @@ wu_2021 <- wu_2021 %>%
 
 print("10x")
 
-tenx_fnames <- ab_fnames[grepl("10x", names(ab_fnames))]
-tenx_data_names <- lapply(tenx_fnames, read_rds)
+tenx_data_names <- protein_names[grepl("10x",names(protein_names))]
+#tenx_data_names <- lapply(tenx_fnames, read_rds)
 tenx_data_names <- data.frame(Data_Name = unlist(tenx_data_names),
                               Study = rep(names(tenx_data_names),
-                                          lengths(tenx_data_names)))
+                                          lengths(tenx_data_names))) %>%
+    dplyr::mutate(TEMP = gsub("-Total(Seq)?[ABCD]$", "", Data_Name))
+
 tenx_clones <- citeseq %>%
     dplyr::filter(grepl("10x", Study)) %>%
-    dplyr::mutate(Data_Name = gsub("_", "-", TEMP))
+    dplyr::mutate(TEMP = paste(Antigen, Clone, sep = "-"),
+                  TEMP = gsub("_", "-", TEMP)) %>%
+    # Some data names include Clone, first add these
+    dplyr::left_join(tenx_data_names, by = c("Study", "TEMP"))
+
+# Find the unmatched Data_Names
+tenx_data_names <- tenx_data_names %>%
+    dplyr::anti_join(tenx_clones) %>%
+    dplyr::mutate(TEMP = ifelse(Study == "10x19Nov2018" &
+                                    grepl("control", Data_Name),
+                                gsub("-control", "", TEMP), TEMP))
+
+tenx_clones <- tenx_clones %>%
+    dplyr::mutate(TEMP = Antigen) %>%
+    dplyr::rows_patch(tenx_data_names, by = c("TEMP", "Study"))
+
 
 # Check that all data names are correct:
 anti_join(tenx_data_names, tenx_clones)
