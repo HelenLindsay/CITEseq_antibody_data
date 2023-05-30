@@ -1,5 +1,7 @@
 # This script manually matches the Antibody names with the Antibody Derived Tag
-# (ADT) names used in the data.
+# (ADT) names used in the data.  It requires a file of protein names, generated
+# by the CITE-seq data fetching pipeline, see
+# https://github.com/bernibra/CITE-wrangling
 
 # To do: TEMP may be the data name, remove after merging
 
@@ -24,8 +26,11 @@ library("readr")
 #names(protein_names) <- protein_sce
 #protein_names <- split(protein_names, studies)
 
+
+# Get a list of the unique names used for ADT expression in each study
+# Here we only keep files with human data
 all_protein_names <- read_rds("../inst/extdata/protein_names.rds")
-studies <- names(protein_names)
+studies <- names(all_protein_names)
 protein_files <- unlist(all_protein_names, recursive = FALSE)
 keep_files <- ! grepl("[Mm]ouse", names(protein_files))
 filename_to_study <- rep(studies, lengths(all_protein_names))
@@ -33,7 +38,6 @@ protein_names <- split(protein_files[keep_files],
                     filename_to_study[keep_files])
 ab_fnames <- split(names(protein_files)[keep_files],
                    filename_to_study[keep_files])
-
 protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
 
 # Match study with data file names ----
@@ -44,12 +48,13 @@ acc_to_name <- read_delim("../inst/extdata/metadata/papers.csv") %>%
 acc_to_study <- structure(acc_to_name$Accession, names = acc_to_name$Name)
 
 # Load citeseq data ----
-citeseq <- readr::read_delim(
-    file = "../inst/extdata/ADT_clones/merged_adt_clones.tsv") %>%
-    # If rerunning, remove existing data names
-    dplyr::select(-any_of("Data_Name"))
 
-# Check for missing studies ---- Wu_2021 is in citeseq not data
+#citeseq <- readr::read_delim(
+#    file = "../inst/extdata/ADT_clones/merged_adt_clones.tsv") %>%
+#    # If rerunning, remove existing data names
+#    dplyr::select(-any_of("Data_Name"))
+
+# Check for missing studies ----
 setdiff(studies, acc_to_name$Accession)
 setdiff(citeseq$Study, acc_to_name$Name)
 
@@ -456,6 +461,9 @@ lawlor_2021 <- lawlor_2021 %>%
 # in the patient table but CD326 catalogue number from the clone table is not
 # a TotalSeq antibody
 
+# Some of the samples have only RNA, so the protein name files are empty
+
+
 nm <- "Leader_2021"
 
 #leader_fnames <- ab_fnames[[acc_to_study[[nm]]]]
@@ -463,9 +471,9 @@ nm <- "Leader_2021"
 data_names <- all_protein_names[[acc_to_study[[nm]]]]
 
 # Get patient and batch ID from filenames
-batch_id <- rep(gsub(".*batch_ID_([0-9]+).*", "\\1", leader_fnames),
+batch_id <- rep(gsub(".*batch_ID_([0-9]+).*", "\\1", names(data_names)),
                 lengths(data_names))
-patient_id <- rep(gsub(".*patient_([0-9]+).*", "\\1", leader_fnames),
+patient_id <- rep(gsub(".*patient_([0-9]+).*", "\\1", names(data_names)),
                   lengths(data_names))
 data_names <- data.frame(Data_Name = unlist(data_names)) %>%
     dplyr::mutate(batch = batch_id,
@@ -908,7 +916,8 @@ pombo_patch <- data.frame(Data_Name = c("B7.H4",
                                         "CD307c",
                                         "DopamineReceptorD4",
                                         "Ig.lightChainK",
-                                        "Ig.lightChainλ",
+                                        # Below was originally Ig.lightChainλ
+                                        "Ig.lightChain..",
                                         "LOX.1",
                                         "mastCellTryptase",
                                         "Tim.4",
@@ -938,14 +947,14 @@ nm <- "PomboAntunes_2021"
 #pombo_fnames <- ab_fnames[[acc_to_study[[nm]]]]
 #"GSE163120_GSE163120_Human-GSM4972212_Citeseq_Human"
 #pombo_human <- pombo_fnames[grepl("Human", pombo_fnames)]
-pombo_human <- protein_names[[acc_to_study[[nm]]]]
+pombo_human <- all_protein_names[[acc_to_study[[nm]]]]
+pombo_human <- pombo_human[grepl("Human", names(pombo_human))]
 
 # Oligo ID is present if there are two different clones used
-data_names <- read_rds(pombo_human)
-data_names <- data.frame(Data_Name = data_names) %>%
+data_names <- data.frame(Data_Name = unname(unlist(pombo_human))) %>%
     dplyr::mutate(Oligo_ID = gsub(".*\\.A([0-9]{4})$", "\\1", Data_Name),
                   Oligo_ID = AbNames:::.noDups(Oligo_ID, Data_Name),
-                  TEMP = gsub("\\.A[0-9]{4}$", "", data_names),
+                  TEMP = gsub("\\.A[0-9]{4}$", "", Data_Name),
                   TEMP = gsub("[\\.+-]", "_", TEMP)) %>%
     dplyr::rows_update(pombo_patch, by = "Data_Name")
 
@@ -953,14 +962,14 @@ pomboAntunes_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
     dplyr::mutate(TEMP = gsub("[\\.+-]", "_", Antigen)) %>%
     dplyr::mutate(TEMP = case_when(grepl("CD207", Antigen) &
-                                       Reactivity == "Human" ~ "CD207_h",
+                Reactivity == "human" ~ "CD207_h",
                                    grepl("CD207", Antigen) &
-                                      Reactivity == "Human, Mouse" ~ "CD207_mh",
+                Reactivity %in% c("mouse/human", "human/mouse") ~ "CD207_mh",
                                    TRUE ~ TEMP))
 
 # Everything in the data is now in TEMP
 x <- pomboAntunes_2021 %>%
-    dplyr::filter(grepl("^h", Reactivity) &
+    dplyr::filter(grepl("^human|isotype", Reactivity) &
                     Gene_Name == toupper(Gene_Name)) %>%
     dplyr::pull(TEMP)
 
@@ -977,10 +986,8 @@ pomboAntunes_2021 <- pomboAntunes_2021 %>%
     dplyr::select(-TEMP) %>%
     tidyr::fill(Study)
 
-# # To do: mouse samples
+# Consider adding the mouse samples in future.
 # pombo_mouse <- pombo_fnames[grepl("Mouse", pombo_fnames)]
-# data_names <- read_rds(pombo_mouse)
-
 
 # Pont_2020 -----
 

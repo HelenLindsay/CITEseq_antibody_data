@@ -480,7 +480,9 @@ poch_2021 <- adt_clones$Poch_2021 %>%
 
 # Note that when splitting into subexperiments, CD207_mh occurs in both panels
 
-# Note that this includes a human and a mouse panel
+# This includes a human and a mouse panel
+
+# Names for the same isotype control used in different concentrations differ
 pombo <- adt_clones$PomboAntunes_2021 %>%
     dplyr::rename(RRID = `Identifier RRID`,
                   Cat_Number = `Cat. No. BioLegend`,
@@ -492,7 +494,10 @@ pombo <- adt_clones$PomboAntunes_2021 %>%
     dplyr::mutate(Study = "PomboAntunes_2021",
                   Vendor = "BioLegend",
                   # Dilution is more commonly formatted as 1:10 than 1/10
-                  Dilution = gsub("\\/", ":", Dilution))
+                  Dilution = gsub("\\/", ":", Dilution),
+                  # Standardise the names of isotype controls
+                  Antigen = ifelse(grepl("^IgG.*-", Antigen),
+                                   gsub("-", "_", Antigen), Antigen))
 
 # Pont 2020 ----
 
@@ -655,7 +660,8 @@ trzupek_2021 <- adt_clones$Trzupek_2021 %>%
 
 # Ty 2023 ----
 ty_2023 <- adt_clones$Ty_2023 %>%
-    dplyr::rename(TotalSeq_Cat = TotalSeqCat)
+    dplyr::rename(TotalSeq_Cat = TotalSeqCat,
+                  Antigen = Antibody)
 
 # Valenzi_2019 ----
 
@@ -770,6 +776,8 @@ all_clones <- do.call(dplyr::bind_rows, all_dat) %>%
 
         Reactivity = tolower(Reactivity),
         Reactivity = gsub(", ", "/", Reactivity),
+
+        Gene_Name = na_if(Gene_Name, "/"),
 
         # Import errors:
         Clone = ifelse(Clone %in% c("50000000000", "5E+10"), "5E10", Clone),
