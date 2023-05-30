@@ -1532,9 +1532,10 @@ tenx_clones <- citeseq %>%
 # Find the unmatched Data_Names
 tenx_data_names <- tenx_data_names %>%
     dplyr::anti_join(tenx_clones) %>%
-    dplyr::mutate(TEMP = ifelse(Study == "10x19Nov2018" &
-                                    grepl("control", Data_Name),
-                                gsub("-control", "", TEMP), TEMP))
+    dplyr::mutate(TEMP = gsub("-control", "", TEMP))
+                  #TEMP = ifelse(Study %in% c("10x19Nov2018", "10x19Nov2018-2") &
+                  #                  grepl("control", Data_Name),
+                  #              gsub("-control", "", TEMP), TEMP))
 
 tenx_clones <- tenx_clones %>%
     dplyr::mutate(TEMP = Antigen) %>%
