@@ -9,6 +9,8 @@ library("stringi")
 # To do: group and check differences in ALT_ID.
 # Chung c-Fos has wrong catalogue number?
 
+existing <- ls()
+
 if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
 
 #merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
@@ -110,7 +112,8 @@ citeseq <- citeseq %>%
     dplyr::filter(! grepl("custom", Cat_Number) &
                       (is.na(Custom_Antibody) | ! Custom_Antibody)) %>%
     fillByGroup(group = "Cat_Number",
-                fill = c("Clone", "Oligo_ID", "TotalSeq_Cat"),
+                fill = c("Clone", "Oligo_ID", "TotalSeq_Cat", "ALT_ID",
+                         "HGNC_ID", "ENSEMBL_ID"),
                 multiple = "ignore") %>%
     # Allow leniency for Reactivity as it hasn't been sorted
     fillByGroup(group = "Cat_Number", fill = c("Reactivity"),
@@ -134,7 +137,10 @@ citeseq %>%
 
 
 # Save annotated data set ----
+merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
 readr::write_delim(citeseq, file = merged_clones)
+
+rm(list = setdiff(ls(), "citeseq"))
 
 # Hao_2021 and Liu_2021 have entries for some but not all Cat_Numbers
 # It appears info can be added for Liu, but Hao entries are custom
