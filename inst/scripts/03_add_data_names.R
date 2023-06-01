@@ -3,8 +3,12 @@
 # by the CITE-seq data fetching pipeline, see
 # https://github.com/bernibra/CITE-wrangling
 
-# To do: TEMP may be the data name, remove after merging
-# Note: Wu_2021_a provided data on request
+# Notes:
+# Wu_2021_a provided data on request
+# In some cases we use gene IDs for matching data names to clone names
+# However, as our clone tables often do not perfectly match the data,
+# rows are added to citeseq data at this stage and reannotation is
+# needed.
 
 
 if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
@@ -784,20 +788,29 @@ nm <- "Mimitou_2021"
 data_names <- protein_names[[acc_to_study[[nm]]]]
 
 data_names <- data.frame(Data_Name = data_names,
-                         TEMP = gsub("\\(.*\\)", "", data_names)) %>%
+                         TEMP = gsub("\\(.*\\)|[\\.-][12]$", "",
+                                     data_names)) %>%
     dplyr::rows_update(mimitou_patch, by = "Data_Name")
 
 mimitou_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
     dplyr::mutate(TEMP = gsub(" ?\\(.*\\)", "", Antigen)) %>%
-    # If there is no match because of multiple clones,
-    # add entries without clone info
+    # Set Cat_Number / Clone / Oligo_ID to NA for the antibodies with multiple
+    # clones as we cannot match the clone to the data
+    dplyr::group_by(Antigen) %>%
+    dplyr::mutate(n = n(),
+                  across(c("Cat_Number", "Clone", "Oligo_ID",
+                           "Barcode_Sequence", "Reactivity"),
+                         ~ifelse(n > 1, NA, .x))) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-ID) %>%
+    unique() %>%
     dplyr::full_join(data_names, by = "TEMP") %>%
     tidyr::fill(Study) %>%
     dplyr::mutate(TEMP = gsub("[\\.-][12]$", "", TEMP),
                   TEMP = gsub("\\.", " ", TEMP),
                   Antigen = dplyr::coalesce(Antigen, TEMP)) %>%
-    dplyr::select(-TEMP)
+    dplyr::select(-TEMP, -n)
 
 
 # Nathan_2021 ----
@@ -1443,7 +1456,8 @@ data_names <- protein_names[[acc_to_study[[nm]]]]
 
 data_names <- data.frame(Data_Name = data_names,
                          TEMP = gsub("ADT-", "", data_names)) %>%
-    tidyr::separate(TEMP, into = c("TEMP", "Clone")) %>%
+    tidyr::separate(TEMP, into = c("TEMP", "Clone"),
+                    fill = "right", extra = "merge") %>%
     dplyr::mutate(TEMP = toupper(gsub(" ", "", TEMP)),
                   TEMP = case_when(TEMP == "HLA" ~ "HLA-DR",
                                    TEMP == "PD1L1" ~ "CD274",
@@ -1533,9 +1547,6 @@ tenx_clones <- citeseq %>%
 tenx_data_names <- tenx_data_names %>%
     dplyr::anti_join(tenx_clones) %>%
     dplyr::mutate(TEMP = gsub("-control", "", TEMP))
-                  #TEMP = ifelse(Study %in% c("10x19Nov2018", "10x19Nov2018-2") &
-                  #                  grepl("control", Data_Name),
-                  #              gsub("-control", "", TEMP), TEMP))
 
 tenx_clones <- tenx_clones %>%
     dplyr::mutate(TEMP = Antigen) %>%
@@ -1557,24 +1568,27 @@ combined <- dplyr::bind_rows(arunachalam_2020, hao_2021,
     stoeckius_2018,
     stuart_2019, su_2020, trzupek_2020, trzupek_2021, valenzi_2019, wang_2020,
     vanuytsel_2020, witkowski_2020, wu_2021, tenx_clones) %>%
-    dplyr::mutate(Antigen = coalesce(Antigen, Data_Name)) %>%
-    dplyr::select(-ID) %>%
-    AbNames::addID()
+    dplyr::mutate(Antigen = coalesce(Antigen, Data_Name))
 
 
 combined_add <- dplyr::anti_join(citeseq, combined, by = c("ID"))
 
 citeseq <- combined %>%
+    dplyr::ungroup() %>%
     dplyr::bind_rows(combined_add) %>%
-    dplyr::select(-ID, -TEMP) %>%
-    dplyr::relocate(ID, Antigen, Data_Name) %>%
-    AbNames::addID()
+    dplyr::select(-TEMP, -ID) %>%
+    dplyr::relocate(Antigen, Data_Name) %>%
+    AbNames::addID() %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(across(where(is.character), ~stringr::str_squish(.x)))
 
-#readr::write_delim(citeseq,
-#                   file = "~/Analyses/AbNames/inst/extdata/citeseq.csv",
-#                   delim = ",")
+unannotated <- citeseq %>% filter(is.na(ALT_ID))
 
-#readr::write_delim(citeseq, file = "ADT_clones/merged_adt_clones.tsv")
+
+rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
+
+readr::write_delim(citeseq,
+                   file = "../inst/extdata/merged_adt_clones.tsv")
 
 
 #"Arunachalam_2020" "Stuart_2019"
@@ -1582,3 +1596,5 @@ citeseq <- combined %>%
 
 # To do - add a column indicating if in data not in clone table?
 # Check if antigens missing from combined table are correct
+
+# To do: fill by Barcode_Sequence? Given antigen totalseq_cat and barcode_sequence (and clone?)
