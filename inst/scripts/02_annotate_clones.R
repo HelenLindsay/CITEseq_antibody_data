@@ -69,17 +69,17 @@ citeseq <- searchTotalseq(citeseq)
 
 # Check for missing annotation ----
 citeseq %>%
-    dplyr::filter(is.na(ALT_ID) & ! Isotype_Control)
+    dplyr::filter(is.na(ALT_ID) & ! Isotype_Control) %>%
+    dplyr::select(ID, Antigen, Cat_Number, Clone)
 
 # Patch the antigens that are still missing -----
 cs_patch <- tibble::tribble(~Antigen, ~value,
-                            "Annexin V", "annexin V",
                             "DopamineD4receptor", "dopamine receptor D4",
                             "DopamineReceptorD4", "dopamine receptor D4",
                             # There are antibodies against CD235a and CD235a/b
-                            "CD235", "CD235a",
                             "CD32/ Fcg RII", "CD32",
-                            "CD110 MPL", "CD110")
+                            "CD110 MPL", "CD110",
+                            "integrin b7", "ITGB7")
 
 cs_patch <- cs_patch %>%
     dplyr::left_join(gene_aliases, by = "value") %>%
