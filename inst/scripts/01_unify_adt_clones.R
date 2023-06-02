@@ -814,8 +814,7 @@ all_clones <- all_clones %>%
                     Isotype_Control &
                       grepl("Armenian Hamster|^[Aa]rm", Antigen) ~
                          "armenian hamster",
-                    TRUE ~ Reactivity)) %>%
-    dplyr::select(-TEMP)
+                    TRUE ~ Reactivity))
 
 # Fix manually identified mistakes or inconsistencies ----
 
@@ -917,7 +916,7 @@ readr::write_delim(all_clones,
                    delim = ",")
 
 # Clean up
-rm(list = setdiff(ls(), c(existing, "all_clones")))
+rm(list = setdiff(ls(), c(existing, "existing", "all_clones")))
 
 # Notes:
 # MOPC273 Hao IgG2a is an error?
