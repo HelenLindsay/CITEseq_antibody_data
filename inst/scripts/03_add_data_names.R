@@ -11,6 +11,11 @@
 # needed.
 
 
+# Missing study id
+# granja_2019 kotliarov_2020 leader_2021 mair_2020 mimitou_2019 papalexi_2021,
+# stoeckius_2018 witkowski_2020
+
+
 if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
 
 # Libraries ----
@@ -787,14 +792,22 @@ nm <- "Mimitou_2021"
 #data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
 data_names <- protein_names[[acc_to_study[[nm]]]]
 
-data_names <- data.frame(Data_Name = data_names,
-                         TEMP = gsub("\\(.*\\)|[\\.-][12]$", "",
-                                     data_names)) %>%
+# The duplicated antibodies are named slightly differently in the two
+# files.
+data_names <- data.frame(Data_Name = unlist(data_names)) %>%
+    dplyr::mutate(TEMP = gsub("\\(.*\\)|[\\.-][12]$", "", Data_Name),
+                  TEMP = ifelse(TEMP == "CD3",
+                                gsub("-", "\\.", Data_Name), TEMP)) %>%
     dplyr::rows_update(mimitou_patch, by = "Data_Name")
 
 mimitou_2021 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
-    dplyr::mutate(TEMP = gsub(" ?\\(.*\\)", "", Antigen)) %>%
+    dplyr::mutate(TEMP = gsub(" ?\\(.*\\)", "", Antigen),
+                  # CD275 has two differently named clones of CD275.
+                  # As we can not tell which clone is which, make names equal
+                  Antigen =
+                      ifelse(grepl("^CD275", Antigen), "CD275", Antigen)) %>%
+
     # Set Cat_Number / Clone / Oligo_ID to NA for the antibodies with multiple
     # clones as we cannot match the clone to the data
     dplyr::group_by(Antigen) %>%
@@ -805,7 +818,7 @@ mimitou_2021 <- citeseq %>%
     dplyr::ungroup() %>%
     dplyr::select(-ID) %>%
     unique() %>%
-    dplyr::full_join(data_names, by = "TEMP") %>%
+    dplyr::full_join(data_names, by = "TEMP", relationship = "one-to-many") %>%
     tidyr::fill(Study) %>%
     dplyr::mutate(TEMP = gsub("[\\.-][12]$", "", TEMP),
                   TEMP = gsub("\\.", " ", TEMP),
@@ -1558,6 +1571,18 @@ anti_join(tenx_data_names, tenx_clones)
 
 # Combine data names, patch into citeseq data -----
 
+all_data <- list(arunachalam_2020, hao_2021,
+                 buus_2021, cadot_2020, chung_2021, fernandez_2020, fidanza_2020,
+                 frangieh_2021, granja_2019, holmes_2020, kaufmann_2021, kotliarov_2020,
+                 krebs_2020, lawlor_2021, leader_2021, lecoz_2021, lee_2021, liu_2021,
+                 mair_2020, mimitou_2019, mimitou_2021, nathan_2021,
+                 papalexi_2021, pei_2020, poch_2021, pomboAntunes_2021, pont_2020, qi_2020,
+                 rinconArevalo_2021, shangguan_2021, stephenson_2021, stoeckius_2017,
+                 stoeckius_2018,
+                 stuart_2019, su_2020, trzupek_2020, trzupek_2021, valenzi_2019, wang_2020,
+                 vanuytsel_2020, witkowski_2020, wu_2021, tenx_clones)
+
+
 combined <- dplyr::bind_rows(arunachalam_2020, hao_2021,
     buus_2021, cadot_2020, chung_2021, fernandez_2020, fidanza_2020,
     frangieh_2021, granja_2019, holmes_2020, kaufmann_2021, kotliarov_2020,
@@ -1585,16 +1610,15 @@ citeseq <- combined %>%
 unannotated <- citeseq %>% filter(is.na(ALT_ID))
 
 
-rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
+#rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
 
 readr::write_delim(citeseq,
                    file = "../inst/extdata/merged_adt_clones.tsv")
 
 
-#"Arunachalam_2020" "Stuart_2019"
+# "Arunachalam_2020" "Stuart_2019"
 # "Granja_2019"      "Hao_2021" "Stoeckius_2018"
 
 # To do - add a column indicating if in data not in clone table?
 # Check if antigens missing from combined table are correct
 
-# To do: fill by Barcode_Sequence? Given antigen totalseq_cat and barcode_sequence (and clone?)

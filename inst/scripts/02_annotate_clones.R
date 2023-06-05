@@ -1,6 +1,9 @@
 # This script matches antibody names with identifiers using the gene_aliases
 # table in the package AbNames
 
+# To do: fill by Barcode_Sequence? Given antigen totalseq_cat and barcode_sequence (and clone?)
+
+
 library("tidyverse")
 library("AbNames")
 library("janitor")
@@ -140,7 +143,7 @@ citeseq %>%
 merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
 readr::write_delim(citeseq, file = merged_clones)
 
-#rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
+rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
 
 # Hao_2021 and Liu_2021 have entries for some but not all Cat_Numbers
 # It appears info can be added for Liu, but Hao entries are custom
