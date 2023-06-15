@@ -1,8 +1,6 @@
 # This script matches antibody names with identifiers using the gene_aliases
 # table in the package AbNames
 
-# To do: fill by Barcode_Sequence? Given antigen totalseq_cat and barcode_sequence (and clone?)
-
 
 library("tidyverse")
 library("AbNames")
@@ -15,9 +13,6 @@ library("stringi")
 existing <- ls()
 
 if(! grepl("vignettes", getwd())) { setwd("./vignettes") }
-
-#merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
-#citeseq <- readr::read_delim(file = merged_clones)
 
 # Make a table for querying alias table, excluding isotype controls ----
 
@@ -125,6 +120,9 @@ citeseq <- citeseq %>%
                 multiple = "ignore") %>%
     # It is possible to share oligo, antigen and clone but not cat number
     fillByGroup(group = c("Clone", "Oligo_ID", "TotalSeq_Cat"),
+                fill = c("Cat_Number"), multiple = "ignore") %>%
+    fillByGroup(group =
+                    c("Antigen", "Barcode_Sequence", "TotalSeq_Cat", "Clone"),
                 fill = c("Cat_Number"), multiple = "ignore")
 
 citeseq <- dplyr::bind_rows(citeseq, citeseq_custom) %>%
@@ -140,8 +138,8 @@ citeseq %>%
 
 
 # Save annotated data set ----
-merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.tsv"
-readr::write_delim(citeseq, file = merged_clones)
+merged_clones <- "../inst/extdata/ADT_clones/merged_adt_clones.csv"
+readr::write_csv(citeseq, file = merged_clones)
 
 rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
 

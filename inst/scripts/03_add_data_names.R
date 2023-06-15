@@ -27,6 +27,23 @@ library("readr")
 
 # Get filenames by study ----
 
+protein_fnames <- list.files("~/Analyses/CITEseq_curation/data/protein/",
+                            recursive=TRUE, full.names = TRUE,
+                            pattern="features.*")
+array_express <- grepl("E-MTAB", protein_fnames)
+studies <- gsub(".*features_([^-]*)-.*", "\\1", protein_fnames)
+studies[array_express] <- gsub(".*_(E-MTAB-[0-9]+)-.*", "\\1",
+                               protein_fnames[array_express])
+
+# Separate names for each original file
+all_protein_names <- lapply(protein_fnames, read_rds)
+
+# Combined by study
+protein_names <- split(all_protein_names, studies)
+protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
+
+
+# Version 1
 #protein_names <- list.files("inst/extdata/protein_names",
 #                            full.names=TRUE, recursive=TRUE)
 #protein_short_nms <- gsub(".*features_", "", protein_names)
@@ -38,23 +55,27 @@ library("readr")
 #protein_names <- split(protein_names, studies)
 
 
+# Version 2
 # Get a list of the unique names used for ADT expression in each study
 # Here we only keep files with human data
-all_protein_names <- read_rds("../inst/extdata/protein_names.rds")
-studies <- names(all_protein_names)
-protein_files <- unlist(all_protein_names, recursive = FALSE)
-keep_files <- ! grepl("[Mm]ouse", names(protein_files))
-filename_to_study <- rep(studies, lengths(all_protein_names))
-protein_names <- split(protein_files[keep_files],
-                    filename_to_study[keep_files])
-ab_fnames <- split(names(protein_files)[keep_files],
-                   filename_to_study[keep_files])
-protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
+#all_protein_names <- read_rds("../inst/extdata/protein_names.rds")
+#studies <- names(all_protein_names)
+#protein_files <- unlist(all_protein_names, recursive = FALSE)
+#keep_files <- ! grepl("[Mm]ouse", names(protein_files))
+#filename_to_study <- rep(studies, lengths(all_protein_names))
+#protein_names <- split(protein_files[keep_files],
+#                    filename_to_study[keep_files])
+#ab_fnames <- split(names(protein_files)[keep_files],
+#                   filename_to_study[keep_files])
+#protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
 
 # Match study with data file names ----
 acc_to_name <- read_delim("../inst/extdata/metadata/papers.csv") %>%
     dplyr::mutate(Accession =
-                    dplyr::coalesce(Accession, gsub("_", "", Name))) %>%
+                    dplyr::coalesce(Accession, gsub("_", "", Name)),
+                  # Mistake in Triana accession
+                  Acession = ifelse(Accession == "Triana2021",
+                                    "Triana2022", Accession)) %>%
     dplyr::filter(Accession %in% studies)
 acc_to_study <- structure(acc_to_name$Accession, names = acc_to_name$Name)
 
@@ -80,7 +101,7 @@ citeseq %>%
     unique() %>%
     dplyr::filter(n() != n_distinct(Antigen)) %>%
     dplyr::filter(AbNames:::.dups(Antigen)) %>%
-    dplyr::arrange(Study, Antigen)  %>%
+    dplyr::arrange(Study, Antigen) %>%
     data.frame()
 
 duplicated_ab <- c("Granja_2019", "Hao_2021", "Leader_2021",
@@ -258,7 +279,8 @@ nm <- "Granja_2019"
 print(nm)
 
 granja_nms <- ab_fnames[[acc_to_study[[nm]]]]
-granja_samples <- gsub(".*scADT_(.*)\\.rds", "\\1", granja_nms)
+#granja_samples <- gsub(".*scADT_(.*)\\.rds", "\\1", granja_nms)
+granja_samples <- gsub(".*scADT_(.*)\\/se.*", "\\1", granja_nms)
 granja_ts <- ifelse(grepl("CD34|MPAL", granja_samples), "A", "B")
 
 # According to the data names, the same 16 panel is used in all
@@ -270,12 +292,13 @@ data_names <- data.frame(Data_Name = unlist(data_names),
                          Sample = rep(granja_samples, lengths(data_names))) %>%
     unique()
 
+# The CITE-seq table has entries for each sample
 granja_2019 <- citeseq %>%
     dplyr::filter(Study == nm) %>%
     dplyr::mutate(Data_Name = gsub(" .*", "", Antigen),
                   Data_Name = gsub("CD8a", "CD8A", Data_Name))
 
-# Antigens in data missing from clone table (none)
+# Antigens in data missing from clone table
 dplyr::anti_join(data_names, granja_2019, by = c("Data_Name", "TotalSeq_Cat"))
 # Antigens in clone table missing from data (isotype controls)
 dplyr::anti_join(granja_2019, data_names, by = c("Data_Name", "TotalSeq_Cat"))
@@ -1612,8 +1635,8 @@ unannotated <- citeseq %>% filter(is.na(ALT_ID))
 
 #rm(list = setdiff(ls(), c(existing, "existing", "citeseq")))
 
-readr::write_delim(citeseq,
-                   file = "../inst/extdata/merged_adt_clones.tsv")
+#readr::write_csv(citeseq,
+#                 file = "../inst/extdata/merged_adt_clones.csv")
 
 
 # "Arunachalam_2020" "Stuart_2019"

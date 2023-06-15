@@ -634,7 +634,7 @@ su <- su %>%
     tidyr::separate(DNA_ID, into = c("TotalSeq_Cat","Oligo_ID"),
                     sep = "(?<=[ABC])") %>%
     dplyr::mutate(Antigen = ifelse(is.na(TEMP), Antigen, TEMP)) %>%
-    dplyr::select(-TEMP)
+    dplyr::select(-TEMP, -Description)
 
 # Triana 2021 ----
 
@@ -911,9 +911,8 @@ all_clones <- all_clones %>%
     dplyr::arrange(Antigen, Cat_Number)
 
 
-readr::write_delim(all_clones,
-                   file = sprintf("%s/merged_adt_clones.tsv", clone_dir),
-                   delim = ",")
+readr::write_csv(all_clones,
+                 file = sprintf("%s/merged_adt_clones.csv", clone_dir))
 
 # Clean up
 rm(list = setdiff(ls(), c(existing, "existing", "all_clones")))
