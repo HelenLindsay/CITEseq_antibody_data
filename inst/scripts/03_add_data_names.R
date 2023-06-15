@@ -74,7 +74,7 @@ acc_to_name <- read_delim("../inst/extdata/metadata/papers.csv") %>%
     dplyr::mutate(Accession =
                     dplyr::coalesce(Accession, gsub("_", "", Name)),
                   # Mistake in Triana accession
-                  Acession = ifelse(Accession == "Triana2021",
+                  Accession = ifelse(Accession == "Triana2021",
                                     "Triana2022", Accession)) %>%
     dplyr::filter(Accession %in% studies)
 acc_to_study <- structure(acc_to_name$Accession, names = acc_to_name$Name)
