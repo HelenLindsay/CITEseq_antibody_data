@@ -446,7 +446,9 @@ nettersheim <- adt_clones$Nettersheim_2022 %>%
     dplyr::mutate(Cat_Number = as.character(Cat_Number),
                   # Thr181 refers to phospho Tau (Thr181)
                   Antigen = gsub("Thr181", "Tau Phospho (Thr181)", Antigen)) %>%
-    dplyr::select(-Universal)
+    dplyr::select(-Universal) %>%
+    # Remove duplicate row TCR Va7-2
+    dplyr::unique()
 
 # Papalexi_2021 -----
 

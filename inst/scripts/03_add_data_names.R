@@ -31,9 +31,12 @@ protein_fnames <- list.files("~/Analyses/CITEseq_curation/data/protein/",
                             recursive=TRUE, full.names = TRUE,
                             pattern="features.*")
 array_express <- grepl("E-MTAB", protein_fnames)
+tenx <- grepl("features_10x", protein_fnames)
 studies <- gsub(".*features_([^-]*)-.*", "\\1", protein_fnames)
 studies[array_express] <- gsub(".*_(E-MTAB-[0-9]+)-.*", "\\1",
                                protein_fnames[array_express])
+studies[tenx] <- gsub(".*_(10x[0-9]+[A-z]+[0-9]+(-2)?).*", "\\1",
+                      protein_fnames[tenx])
 
 # Separate names for each original file
 all_protein_names <- lapply(protein_fnames, read_rds)
@@ -70,6 +73,7 @@ protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
 #protein_names <- lapply(protein_names, function(x) unique(unlist(x)))
 
 # Match study with data file names ----
+
 acc_to_name <- read_delim("../inst/extdata/metadata/papers.csv") %>%
     dplyr::mutate(Accession =
                     dplyr::coalesce(Accession, gsub("_", "", Name)),
@@ -155,6 +159,21 @@ arunachalam_2020 <- arunachalam_2020 %>%
 ! any(is.na(arunachalam_2020$Data_Name))
 all(data_names$Data_Name %in% arunachalam_2020$Data_Name)
 
+# Bai_2022 ----
+
+# There is a data name "ADT-".  Check if there are counts for this
+
+nm <- "Bai_2022"
+
+data_names <- data.frame(Data_Name = protein_names[[acc_to_study[[nm]]]]) %>%
+    dplyr::mutate(Antigen = gsub("ADT-", "", Data_Name)) %>%
+    dplyr::filter(! Data_Name == "ADT-")
+
+bai_2022 <- citeseq %>%
+    dplyr::filter(Study == nm) %>%
+    dplyr::full_join(data_names) %>%
+    tidyr::fill(Study, Vendor, Isotype_Control)
+
 # Buus_2021 ----
 
 nm <- "Buus_2021"
@@ -165,10 +184,29 @@ buus_2021 <- citeseq %>%
 #data_names <- unique(unlist(lapply(ab_fnames[[acc_to_study[[nm]]]], read_rds)))
 data_names <- protein_names[[acc_to_study[[nm]]]]
 
-
 # Check that all are accounted for
 setdiff(data_names, buus_2021$Data_Name)
 setdiff(buus_2021$Data_Name, data_names)
+
+# Colpitts_2023 ----
+
+colpitts_patch <- tibble::tribble(~Antigen, ~Data_Name,
+                                  "TCR g/d", "TCRgd",
+                                  "TCR a/b", "TCRab",
+                                  "CD32/ Fcg RII", "CD32",
+                                  "CD57 Recombinant", "CD57",
+                                  "integrin b7", "IntegrinB7",
+                                  "TCR Va24-Ja18 (iNKT cell)", "TCRVa24-Ja18")
+
+nm <- "Colpitts_2023"
+colpitts_2023 <- citeseq %>%
+    dplyr::filter(Study == nm) %>%
+    dplyr::mutate(Data_Name = gsub(" \\(.*", "", Antigen)) %>%
+    dplyr::rows_update(colpitts_patch)
+
+# Check that all data_names are now in table
+data_names <- protein_names[[acc_to_study[[nm]]]]
+identical(sort(data_names), sort(colpitts_2023$Data_Name))
 
 # Cadot_2020 ----
 # Isotype control is in clone table but not in data
@@ -875,6 +913,39 @@ nathan_2021 <- nathan_2021 %>%
     dplyr::full_join(data_names, by = "TEMP") %>%
     dplyr::select(-TEMP)
 
+# Nettersheim_2022 ----
+
+nettersheim_patch <- tibble::tribble(~Data_Name, ~TEMP,
+                                     "HLA_A-B-C", "HLA-A-B-C",
+                                     "Mac-2", "Mac_2")
+
+nm <- "Nettersheim_2022"
+nettersheim_2022 <- citeseq %>%
+    dplyr::filter(Study == nm) %>%
+    dplyr::mutate(TEMP = gsub(" ", "_", Antigen),
+                  TEMP = ifelse(TEMP == "Tau_Phospho_(Thr181)",
+                                "Thr181", TEMP))
+
+data_names <- data.frame(Data_Name = protein_names[[acc_to_study[[nm]]]])
+# Check that there are no duplicates if .1 suffix is removed
+any(duplicated(gsub("\\.1", "", data_names$Data_Name)))
+
+data_names <- data_names %>%
+    dplyr::mutate(TEMP = gsub("\\.1|_Recombinant|-1|anti-", "", Data_Name),
+                  TEMP = gsub("Ctrl", "control", TEMP),
+                  TEMP = gsub("kappa", "k", TEMP),
+                  TEMP = gsub("lambda", "l", TEMP),
+                  TEMP = gsub("\\.", "-", TEMP)) %>%
+    dplyr::filter(! startsWith(Data_Name, "HTO")) %>%
+    dplyr::rows_update(nettersheim_patch)
+
+nettersheim_2022$TEMP[!nettersheim_2022$TEMP %in% data_names$TEMP]
+data_names$TEMP[!data_names$TEMP %in% nettersheim_2022$TEMP]
+
+nettersheim_2022 <- nettersheim_2022 %>%
+    dplyr::left_join(data_names, by = "TEMP") %>%
+    dplyr::select(-TEMP)
+
 # Papalexi_2021 ----
 
 # Some of the antibodies in the data are not listed in the clone table
@@ -1404,6 +1475,29 @@ trzupek_2021 <- trzupek_2021 %>%
     dplyr::select(-TEMP) %>%
     dplyr::mutate(Study = "Trzupek_2021")
 
+# Ty_2023 ----
+
+# To do: pick out the lcones of missing
+
+ty_patch <- tibble::tribble(~Data_Name, ~Antigen,
+                            "HLA-DR--L243-TSB", "HLADR",
+                            "TCR-Vdelta2--B6-TSB", "TCR.Vd2")
+
+nm <- "Ty_2023"
+ty_2023 <- citeseq %>%
+    dplyr::filter(Study == nm)
+
+data_names <- data.frame(Data_Name = protein_names[[acc_to_study[[nm]]]]) %>%
+    dplyr::mutate(Antigen = ifelse(grepl("Mouse", Data_Name),
+                                   gsub("--.*", "", Data_Name),
+                                   gsub("-.*", "", Data_Name))) %>%
+    dplyr::rows_update(ty_patch)
+
+ty_2023$Antigen[!ty_2023$Antigen %in% data_names$Antigen]
+
+ty_2023 <- ty_2023 %>%
+    dplyr::full_join(data_names) %>%
+    tidyr::fill(Study, Vendor, TotalSeq_Cat)
 
 # Valenzi_2019 ----
 # The only information given in the paper was that antibodies are TotalSeq A
@@ -1606,11 +1700,12 @@ all_data <- list(arunachalam_2020, hao_2021,
                  vanuytsel_2020, witkowski_2020, wu_2021, tenx_clones)
 
 
-combined <- dplyr::bind_rows(arunachalam_2020, hao_2021,
-    buus_2021, cadot_2020, chung_2021, fernandez_2020, fidanza_2020,
-    frangieh_2021, granja_2019, holmes_2020, kaufmann_2021, kotliarov_2020,
+combined <- dplyr::bind_rows(arunachalam_2020, bai_2022,
+    buus_2021, cadot_2020, chung_2021, colpitts_2023, fernandez_2020,
+    fidanza_2020,  frangieh_2021, granja_2019, hao_2021, holmes_2020,
+    kaufmann_2021, kotliarov_2020,
     krebs_2020, lawlor_2021, leader_2021, lecoz_2021, lee_2021, liu_2021,
-    mair_2020, mimitou_2019, mimitou_2021, nathan_2021,
+    mair_2020, mimitou_2019, mimitou_2021, nathan_2021, nettersheim_2022,
     papalexi_2021, pei_2020, poch_2021, pomboAntunes_2021, pont_2020, qi_2020,
     rinconArevalo_2021, shangguan_2021, stephenson_2021, stoeckius_2017,
     stoeckius_2018,
@@ -1618,6 +1713,9 @@ combined <- dplyr::bind_rows(arunachalam_2020, hao_2021,
     vanuytsel_2020, witkowski_2020, wu_2021, tenx_clones) %>%
     dplyr::mutate(Antigen = coalesce(Antigen, Data_Name))
 
+# Entries without an ID were not reported in clone table
+
+# Ty_2023  "Wu_2021_a" "Wu_2021_b"
 
 combined_add <- dplyr::anti_join(citeseq, combined, by = c("ID"))
 
